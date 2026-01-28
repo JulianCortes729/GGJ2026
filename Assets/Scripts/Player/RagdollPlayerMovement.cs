@@ -16,6 +16,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     float maxSpeed = 5;
     float jumpMultiplier = 20;
     bool isGrounded = false;
+    bool isGrabPressed = false;
     RaycastHit[] raycastHits = new RaycastHit[10];
 
     SyncPhysicsObject[] syncPhysicsObjects;
@@ -44,6 +45,12 @@ public class RagdollPlayerMovement : MonoBehaviour
         {
             isJumpPressed = true;
         }
+
+        animator.SetBool("Grabing",Input.GetKey(KeyCode.E));
+        if (Input.GetKeyDown(KeyCode.Mouse0))
+            animator.SetTrigger("LeftPunch");
+        if (Input.GetKeyDown(KeyCode.Mouse1))
+            animator.SetTrigger("RightPunch");
     }
 
     void FixedUpdate()

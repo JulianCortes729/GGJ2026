@@ -1,0 +1,59 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!319 &31900000
+AvatarMask:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: RagdollArms Avatar Mask
+  m_Mask: 01000000000000000000000000000000000000000100000001000000010000000100000000000000000000000100000001000000
+  m_Elements:
+  - m_Path: 
+    m_Weight: 1
+  - m_Path: Armature
+    m_Weight: 0
+  - m_Path: Armature/Root
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.L
+    m_Weight: 1
+  - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L/Mano.L
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L/Mano.L/Mano.L_end
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.R
+    m_Weight: 1
+  - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R/Mano.R
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R/Mano.R/Mano.R_end
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Pecho
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Pecho/Cabeza
+    m_Weight: 0
+  - m_Path: Armature/Root/Cadera/Pecho/Cabeza/Cabeza_end
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001..R
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001..R/Pierna002..R
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001..R/Pierna002..R/Pierna003..R
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001..R/Pierna002..R/Pierna003..R/Pierna003..R_end
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001.L
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001.L/Pierna002.L
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001.L/Pierna002.L/Pierna003.L
+    m_Weight: 0
+  - m_Path: Armature/Root/Pierna001.L/Pierna002.L/Pierna003.L/Pierna003.L_end
+    m_Weight: 0
+  - m_Path: SM_CM_001
+    m_Weight: 0
