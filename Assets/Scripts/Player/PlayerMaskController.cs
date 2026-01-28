@@ -40,7 +40,8 @@ public class PlayerMaskController : MonoBehaviour
 
         currentMask = pickup.GetMaskInstance(); // se instancia
         currentMask.transform.SetParent(maskHolder); // se equipa
-        currentMask.transform.localPosition = Vector3.zero;
+        currentMask.transform.localPosition = Vector3.zero; // se resetea la posición y rotación
+        currentMask.transform.localRotation = Quaternion.identity;
 
 
         Destroy(pickup.gameObject); // se destruya la mascara que estaba en el suelo
