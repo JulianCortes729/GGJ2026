@@ -2115,6 +2115,11 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: -8391222552659086748, guid: 95edfab3ad5806e49804f0e40e1d20e7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: -5477749408508380018, guid: 95edfab3ad5806e49804f0e40e1d20e7,
         type: 3}
       propertyPath: m_LocalRotation.w
@@ -2134,6 +2139,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: base mesh-8@T-Pose
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 95edfab3ad5806e49804f0e40e1d20e7,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5866666021909216657, guid: 95edfab3ad5806e49804f0e40e1d20e7,
         type: 3}
