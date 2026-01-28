@@ -4,98 +4,164 @@ using UnityEngine;
 
 public class RagdollPlayerMovement : MonoBehaviour
 {
+    [SerializeField] private Rigidbody rb;
+    [SerializeField] private ConfigurableJoint mainJoint;
+    [SerializeField] private Transform cameraTransform;
+    [SerializeField] private Animator animator;
 
-    [SerializeField]
-    Rigidbody rb;
+    private Vector2 moveInput;
+    private bool isJumpPressed;
+    private bool isGrounded;
 
-    [SerializeField]
-    ConfigurableJoint mainJoint;
+    [SerializeField] private float maxSpeed = 5f;
+    [SerializeField] private float moveForce = 30f;
+    [SerializeField] private float jumpMultiplier = 20f;
+    [SerializeField] private float rotationSpeed = 10f;
 
-    Vector2 moveInput = Vector2.zero;
-    bool isJumpPressed = false;
-    float maxSpeed = 5;
-    float jumpMultiplier = 20;
-    bool isGrounded = false;
-    bool isGrabPressed = false;
-    RaycastHit[] raycastHits = new RaycastHit[10];
-
-    SyncPhysicsObject[] syncPhysicsObjects;
-
-    [SerializeField]
-    Animator animator;
+    private RaycastHit[] raycastHits = new RaycastHit[10];
+    private SyncPhysicsObject[] syncPhysicsObjects;
 
     void Awake()
     {
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
     }
 
-    // Start is called before the first frame update
-    void Start()
+    void Update()
     {
-        
+        HandleInput();
+        UpdateAnimations();
     }
 
-    // Update is called once per frame
-    void Update()
+    void FixedUpdate()
+    {
+        CheckGroundStatus();
+        ApplyGravity();
+        HandleMovement();
+        HandleJump();
+        SyncPhysicsWithAnimation();
+    }
+
+    
+    //Captura los inputs del jugador (movimiento, salto, ataques)
+    private void HandleInput()
     {
         moveInput.x = Input.GetAxis("Horizontal");
         moveInput.y = Input.GetAxis("Vertical");
 
         if (Input.GetKeyDown(KeyCode.Space))
-        {
             isJumpPressed = true;
-        }
 
-        animator.SetBool("Grabing",Input.GetKey(KeyCode.E));
         if (Input.GetKeyDown(KeyCode.Mouse0))
             animator.SetTrigger("LeftPunch");
         if (Input.GetKeyDown(KeyCode.Mouse1))
             animator.SetTrigger("RightPunch");
     }
 
-    void FixedUpdate()
+    
+    //Actualiza los parámetros del animador
+    private void UpdateAnimations()
+    {
+        animator.SetBool("Walking", moveInput.sqrMagnitude > 0.01f);
+    }
+
+    
+    //Verifica si el jugador está tocando el suelo usando un SphereCast
+    private void CheckGroundStatus()
     {
         isGrounded = false;
 
-        int numberOfHits = Physics.SphereCastNonAlloc(rb.position,0.1f,transform.up * -1, raycastHits, 0.5f);
+        int hits = Physics.SphereCastNonAlloc(rb.position, 0.1f, Vector3.down, raycastHits, 0.5f);
 
-        for (int i=0; i < numberOfHits; i++)
+        for (int i = 0; i < hits; i++)
         {
             if (raycastHits[i].transform.root == transform)
                 continue;
-            
+
             isGrounded = true;
             break;
         }
+    }
 
+
+    //Aplica gravedad adicional cuando el jugador está en el aire
+    private void ApplyGravity()
+    {
         if (!isGrounded)
-            rb.AddForce(Vector3.down * 10);
-        
-        float inputMagnitude = moveInput.magnitude;
-        
-        animator.SetBool("Walking", inputMagnitude!=0);
+            rb.AddForce(Vector3.down * 10f);
+    }
 
-        if (inputMagnitude != 0)
+
+    //Maneja el movimiento del jugador relativo a la cámara
+    private void HandleMovement()
+    {
+        Vector3 movementDirection = GetCameraRelativeMovement();
+        float inputMagnitude = movementDirection.magnitude;
+
+        if (inputMagnitude > 0.01f)
         {
-            Quaternion desiredDirection = Quaternion.LookRotation(new Vector3(moveInput.x * -1 ,0,moveInput.y),transform.up);
-            mainJoint.targetRotation = Quaternion.RotateTowards(mainJoint.targetRotation,desiredDirection, Time.fixedDeltaTime * 300);
-
-            Vector3 localVelocityVsForward = transform.forward * Vector3.Dot(transform.forward, rb.velocity);
-
-            float localForwardVelocity = localVelocityVsForward.magnitude;
-
-            if(localForwardVelocity < maxSpeed)
-            {
-                rb.AddForce(transform.forward * inputMagnitude * 30);
-            }
+            movementDirection.Normalize();
+            RotatePlayerTowardsMovement(movementDirection);
+            ApplyMovementForce(movementDirection, inputMagnitude);
         }
+    }
 
-        if(isGrounded && isJumpPressed)
+
+    //Calcula la dirección del movimiento relativa a la orientación de la cámara
+    private Vector3 GetCameraRelativeMovement()
+    {
+        Vector3 camForward = cameraTransform.forward;
+        Vector3 camRight = cameraTransform.right;
+
+        //Proyectar en el plano horizontal
+        camForward.y = 0;
+        camRight.y = 0;
+
+        camForward.Normalize();
+        camRight.Normalize();
+
+        return camForward * moveInput.y + camRight * moveInput.x;
+    }
+
+    
+    //Rota suavemente al jugador hacia la dirección del movimiento
+    private void RotatePlayerTowardsMovement(Vector3 direction)
+    {
+        float angleY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
+        Quaternion targetRotation = Quaternion.Euler(0f, angleY, 0f);
+
+        //Invertir la rotación porque ConfigurableJoint trabaja en espacio local invertido
+        mainJoint.targetRotation = Quaternion.Slerp(
+            mainJoint.targetRotation,
+            Quaternion.Inverse(targetRotation),
+            rotationSpeed * Time.fixedDeltaTime
+        );
+    }
+
+    //Aplica fuerza de movimiento si no se ha alcanzado la velocidad máxima
+    private void ApplyMovementForce(Vector3 direction, float inputMagnitude)
+    {
+        float currentVelocity = Vector3.Dot(direction, rb.velocity);
+
+        if (currentVelocity < maxSpeed)
+        {
+            rb.AddForce(direction * inputMagnitude * moveForce, ForceMode.Force);
+        }
+    }
+
+
+    //Maneja el salto del jugador
+    private void HandleJump()
+    {
+        if (isGrounded && isJumpPressed)
         {
             rb.AddForce(Vector3.up * jumpMultiplier, ForceMode.Impulse);
             isJumpPressed = false;
         }
+    }
 
+    //Sincroniza los objetos de física con la animación
+    private void SyncPhysicsWithAnimation()
+    {
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
             syncPhysicsObjects[i].UpdateJointFromAnimation();
