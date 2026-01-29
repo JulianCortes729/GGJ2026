@@ -539,6 +539,39 @@ CapsuleCollider:
   m_Height: 0.3
   m_Direction: 1
   m_Center: {x: 0, y: 0.06, z: 0}
+--- !u!1 &218904363 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 3460210820289254465, guid: 03e14864372d7ef4b833dcde3d16f328,
+    type: 3}
+  m_PrefabInstance: {fileID: 395972368}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &218904366
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 218904363}
+  serializedVersion: 4
+  m_Mass: 0.2
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1 &222142172
 GameObject:
   m_ObjectHideFlags: 0
@@ -1028,11 +1061,6 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 96831373047819847, guid: 03e14864372d7ef4b833dcde3d16f328,
-        type: 3}
-      propertyPath: m_Radius
-      value: 0.148
-      objectReference: {fileID: 0}
     - target: {fileID: 1254119408812983567, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       propertyPath: m_LocalPosition.x
@@ -1083,43 +1111,68 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 2482862880398927176, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
+    - target: {fileID: 3460210820289254465, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_TagString
+      value: CauseDamage
+      objectReference: {fileID: 0}
+    - target: {fileID: 3794385966533803078, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: equipScale
+      value: 1.1
+      objectReference: {fileID: 0}
     - target: {fileID: 3794385966533803078, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       propertyPath: poolManager
       value: 
       objectReference: {fileID: 1145411101}
+    - target: {fileID: 3822345546212887838, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.24
+      objectReference: {fileID: 0}
+    - target: {fileID: 3822345546212887838, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4082994815704287394, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_TagString
+      value: Untagged
+      objectReference: {fileID: 0}
     - target: {fileID: 5053922309750947929, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       propertyPath: m_Name
       value: Ragdoll Player
-      objectReference: {fileID: 0}
-    - target: {fileID: 5053922309750947929, guid: 03e14864372d7ef4b833dcde3d16f328,
-        type: 3}
-      propertyPath: m_IsActive
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5397004931944708742, guid: 03e14864372d7ef4b833dcde3d16f328,
-        type: 3}
-      propertyPath: m_Mass
-      value: 0.2
       objectReference: {fileID: 0}
     - target: {fileID: 6352084887212864434, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       propertyPath: cameraTransform
       value: 
       objectReference: {fileID: 330585546}
+    - target: {fileID: 6740952286769061741, guid: 03e14864372d7ef4b833dcde3d16f328,
+        type: 3}
+      propertyPath: m_TagString
+      value: CauseDamage
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 8429837950735324573, guid: 03e14864372d7ef4b833dcde3d16f328,
+    - targetCorrespondingSourceObject: {fileID: 6740952286769061741, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 1858943907}
-    - targetCorrespondingSourceObject: {fileID: 2626343239434834551, guid: 03e14864372d7ef4b833dcde3d16f328,
+      addedObject: {fileID: 1767597627}
+    - targetCorrespondingSourceObject: {fileID: 3460210820289254465, guid: 03e14864372d7ef4b833dcde3d16f328,
         type: 3}
       insertIndex: -1
-      addedObject: {fileID: 832763687}
+      addedObject: {fileID: 218904366}
   m_SourcePrefab: {fileID: 100100000, guid: 03e14864372d7ef4b833dcde3d16f328, type: 3}
 --- !u!1 &410087039
 GameObject:
@@ -1425,24 +1478,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &832763681 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2626343239434834551, guid: 03e14864372d7ef4b833dcde3d16f328,
-    type: 3}
-  m_PrefabInstance: {fileID: 395972368}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &832763687
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 832763681}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69f31c805f2cda34e9ec6c6ef2a97c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1001 &847334108
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -2251,7 +2286,7 @@ MonoBehaviour:
   - {fileID: 1371864190}
   - {fileID: 428187367}
   minDistanceFromPlayer: 7
-  playerTransform: {fileID: 0}
+  playerTransform: {fileID: 1307669488}
 --- !u!1 &1153587463 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -117467273282726913, guid: e105e9a3eb295ea4a93a37b9f2002b8d,
@@ -3970,7 +4005,7 @@ Rigidbody:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1763089375}
   serializedVersion: 4
-  m_Mass: 0.03
+  m_Mass: 0.01
   m_Drag: 0
   m_AngularDrag: 0.05
   m_CenterOfMass: {x: 0, y: 0, z: 0}
@@ -4087,6 +4122,39 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5accd6307dc79f145a6b3726fac17e0b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1767597624 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6740952286769061741, guid: 03e14864372d7ef4b833dcde3d16f328,
+    type: 3}
+  m_PrefabInstance: {fileID: 395972368}
+  m_PrefabAsset: {fileID: 0}
+--- !u!54 &1767597627
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1767597624}
+  serializedVersion: 4
+  m_Mass: 0.2
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_CenterOfMass: {x: 0, y: 0, z: 0}
+  m_InertiaTensor: {x: 1, y: 1, z: 1}
+  m_InertiaRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ImplicitCom: 1
+  m_ImplicitTensor: 1
+  m_UseGravity: 1
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
 --- !u!1001 &1826336872
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -4155,24 +4223,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 713644d0a2526b240a27674bcdcf2aa4, type: 3}
---- !u!1 &1858943901 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 8429837950735324573, guid: 03e14864372d7ef4b833dcde3d16f328,
-    type: 3}
-  m_PrefabInstance: {fileID: 395972368}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1858943907
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1858943901}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 69f31c805f2cda34e9ec6c6ef2a97c04, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!54 &1868647306
 Rigidbody:
   m_ObjectHideFlags: 0

@@ -1,11 +1,11 @@
 using UnityEngine;
 
 
-//Controla el sistema de máscaras del jugador: recoger, equipar, usar habilidades
+//Controla el sistema de mï¿½scaras del jugador: recoger, equipar, usar habilidades
 public class PlayerMaskController : MonoBehaviour
 {
     [Header("References")]
-    [SerializeField] private Transform maskHolder; //Posición en la cabeza donde se equipa la máscara
+    [SerializeField] private Transform maskHolder; //Posiciï¿½n en la cabeza donde se equipa la mï¿½scara
     [SerializeField] private MaskPoolManager poolManager;
 
     [Header("Input")]
@@ -13,7 +13,7 @@ public class PlayerMaskController : MonoBehaviour
     [SerializeField] private KeyCode useAbilityKey = KeyCode.C;
 
     [Header("Visual")]
-    [SerializeField] private float equipScale = 0.3f; //Escala de la máscara cuando está equipada
+    [SerializeField] private float equipScale = 1.1f; //Escala de la mï¿½scara cuando estï¿½ equipada
 
     // Estado actual
     private GameObject currentMaskObject;
@@ -23,7 +23,7 @@ public class PlayerMaskController : MonoBehaviour
 
     void Update()
     {
-        //Actualizar cooldown de máscara equipada
+        //Actualizar cooldown de mï¿½scara equipada
         if (currentMask != null)
         {
             currentMask.Tick(Time.deltaTime);
@@ -35,7 +35,7 @@ public class PlayerMaskController : MonoBehaviour
             currentMask.TryUse(gameObject);
         }
 
-        //Input para recoger/cambiar máscara
+        //Input para recoger/cambiar mï¿½scara
         if (Input.GetKeyDown(pickupKey) && nearbyMask != null && nearbyMask != currentMaskObject)
         {
             PickupMask(nearbyMask);
@@ -43,16 +43,16 @@ public class PlayerMaskController : MonoBehaviour
     }
 
 
-    //Recoge una máscara nueva (y suelta la actual si existe)
+    //Recoge una mï¿½scara nueva (y suelta la actual si existe)
     void PickupMask(GameObject maskObject)
     {
-        //Si ya tengo una máscara, la devuelvo al pool y respawneo
+        //Si ya tengo una mï¿½scara, la devuelvo al pool y respawneo
         if (currentMaskObject != null)
         {
             DropCurrentMask();
         }
 
-        //Equipar nueva máscara
+        //Equipar nueva mï¿½scara
         currentMaskObject = maskObject;
         currentMask = maskObject.GetComponent<Mask>();
 
@@ -65,7 +65,7 @@ public class PlayerMaskController : MonoBehaviour
         //Guardar escala original ANTES de modificarla
         originalMaskScale = maskObject.transform.localScale;
 
-        //Mover máscara al holder (cabeza)
+        //Mover mï¿½scara al holder (cabeza)
         maskObject.transform.SetParent(maskHolder);
         maskObject.transform.localPosition = Vector3.zero;
         maskObject.transform.localRotation = Quaternion.identity;
@@ -79,16 +79,16 @@ public class PlayerMaskController : MonoBehaviour
         //Limpiar referencia para evitar recoger inmediatamente otra
         nearbyMask = null;
 
-        Debug.Log($"[Player] Equipada máscara: {currentMask.GetMaskType()}");
+        Debug.Log($"[Player] Equipada mï¿½scara: {currentMask.GetMaskType()}");
     }
 
 
-    //Suelta la máscara actual y la respawnea en el mundo
+    //Suelta la mï¿½scara actual y la respawnea en el mundo
     void DropCurrentMask()
     {
         if (currentMaskObject == null) return;
 
-        Debug.Log($"[Player] Soltando máscara: {currentMask.GetMaskType()}");
+        Debug.Log($"[Player] Soltando mï¿½scara: {currentMask.GetMaskType()}");
 
         //Desparentear PRIMERO antes de reciclar
         currentMaskObject.transform.SetParent(null);
@@ -98,13 +98,13 @@ public class PlayerMaskController : MonoBehaviour
         if (col != null)
             col.enabled = true;
 
-        //Restaurar escala ORIGINAL (la que tenía cuando la recogimos)
+        //Restaurar escala ORIGINAL (la que tenï¿½a cuando la recogimos)
         currentMaskObject.transform.localScale = originalMaskScale;
 
         //Reciclar (desactiva y devuelve al pool)
         poolManager.RecycleMask(currentMaskObject);
 
-        //Respawnear en nueva posición
+        //Respawnear en nueva posiciï¿½n
         poolManager.SpawnMask(currentMask.GetMaskType());
 
         //Limpiar referencias
@@ -112,25 +112,25 @@ public class PlayerMaskController : MonoBehaviour
         currentMask = null;
     }
 
-    //Detecta cuando el jugador está cerca de una máscara
+    //Detecta cuando el jugador estï¿½ cerca de una mï¿½scara
     void OnTriggerEnter(Collider other)
     {
         Mask mask = other.GetComponent<Mask>();
         if (mask != null)
         {
             nearbyMask = other.gameObject;
-            Debug.Log($"[Player] Máscara cerca: {mask.GetMaskType()}");
+            Debug.Log($"[Player] Mï¿½scara cerca: {mask.GetMaskType()}");
         }
     }
 
 
-    //Detecta cuando el jugador se aleja de una máscara
+    //Detecta cuando el jugador se aleja de una mï¿½scara
     void OnTriggerExit(Collider other)
     {
         if (other.gameObject == nearbyMask)
         {
             nearbyMask = null;
-            Debug.Log("[Player] Máscara fuera de rango");
+            Debug.Log("[Player] Mï¿½scara fuera de rango");
         }
     }
 
