@@ -20,7 +20,7 @@ AvatarMask:
   - m_Path: Armature/Root/Cadera/Brazo.L
     m_Weight: 1
   - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L/Mano.L
     m_Weight: 0
   - m_Path: Armature/Root/Cadera/Brazo.L/Antebrazo.L/Mano.L/Mano.L_end
@@ -28,7 +28,7 @@ AvatarMask:
   - m_Path: Armature/Root/Cadera/Brazo.R
     m_Weight: 1
   - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R
-    m_Weight: 0
+    m_Weight: 1
   - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R/Mano.R
     m_Weight: 0
   - m_Path: Armature/Root/Cadera/Brazo.R/Antebrazo.R/Mano.R/Mano.R_end
