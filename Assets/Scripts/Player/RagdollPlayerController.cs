@@ -5,10 +5,22 @@ using UnityEngine;
 public class RagdollPlayerController : RagdollController
 {
 
-    // Update is called once per frame
     void Update()
     {
-        this.movementVector = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
-        this.wantsToJump = Input.GetKeyDown(KeyCode.Space);
+        UpdateIntent();
     }
+
+    public override void UpdateIntent()
+    {
+        movementVector = new Vector2(Input.GetAxis("Horizontal"),Input.GetAxis("Vertical"));
+
+        if (Input.GetKeyDown(KeyCode.Space)) wantsToJump = true;
+    }
+
+    public void ConsumeJump()
+    {
+        wantsToJump = false;
+    }
+
+
 }

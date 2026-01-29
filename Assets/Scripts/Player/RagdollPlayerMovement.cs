@@ -22,7 +22,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     private SyncPhysicsObject[] syncPhysicsObjects;
 
     private float startSlerpPositionSpring = 0f;
-    bool isActiveRagdoll=true;
+    bool isActiveRagdoll = true;
     public bool IsActiveRAgdoll => isActiveRagdoll;
 
 
@@ -51,7 +51,7 @@ public class RagdollPlayerMovement : MonoBehaviour
         SyncPhysicsWithAnimation();
     }
 
-    
+
     //Captura los inputs del jugador (movimiento, salto, ataques)
     private void HandleInput()
     {
@@ -66,10 +66,10 @@ public class RagdollPlayerMovement : MonoBehaviour
             animator.SetTrigger("LeftPunch");
         if (Input.GetKeyDown(KeyCode.Mouse1))
             animator.SetTrigger("RightPunch");
-        
+
     }
 
-    
+
     //Actualiza los par�metros del animador
     private void UpdateAnimations()
     {
@@ -78,7 +78,7 @@ public class RagdollPlayerMovement : MonoBehaviour
         animator.SetBool("Grabing", Input.GetKey(KeyCode.E));
     }
 
-    
+
     //Verifica si el jugador est� tocando el suelo usando un SphereCast
     private void CheckGroundStatus()
     {
@@ -136,7 +136,7 @@ public class RagdollPlayerMovement : MonoBehaviour
         return camForward * moveInput.y + camRight * moveInput.x;
     }
 
-    
+
     //Rota suavemente al jugador hacia la direcci�n del movimiento
     private void RotatePlayerTowardsMovement(Vector3 direction)
     {
@@ -178,12 +178,12 @@ public class RagdollPlayerMovement : MonoBehaviour
         JointDrive jointDrive = mainJoint.slerpDrive;
         jointDrive.positionSpring = 0;
         mainJoint.slerpDrive = jointDrive;
-        
-        for (int i=0; i < syncPhysicsObjects.Length; i++)
+
+        for (int i = 0; i < syncPhysicsObjects.Length; i++)
         {
             syncPhysicsObjects[i].MakeRagdoll();
         }
-        isActiveRagdoll=false;
+        isActiveRagdoll = false;
     }
 
     void MakeActiveRagdoll()
@@ -192,10 +192,10 @@ public class RagdollPlayerMovement : MonoBehaviour
         jointDrive.positionSpring = startSlerpPositionSpring;
         mainJoint.slerpDrive = jointDrive;
 
-        for (int i=0; i < syncPhysicsObjects.Length; i++)
+        for (int i = 0; i < syncPhysicsObjects.Length; i++)
             syncPhysicsObjects[i].MakeActiveRagdoll();
 
-        isActiveRagdoll=true;
+        isActiveRagdoll = true;
     }
 
     public void OnPlayerBodyPartHit()
