@@ -21,9 +21,19 @@ public class RagdollPlayerMovement : MonoBehaviour
     private RaycastHit[] raycastHits = new RaycastHit[10];
     private SyncPhysicsObject[] syncPhysicsObjects;
 
+    private float startSlerpPositionSpring = 0f;
+    bool isActiveRagdoll=true;
+    public bool IsActiveRAgdoll => isActiveRagdoll;
+
+
     void Awake()
     {
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+    }
+
+    void Start()
+    {
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     void Update()
@@ -47,7 +57,8 @@ public class RagdollPlayerMovement : MonoBehaviour
     {
         moveInput.x = Input.GetAxis("Horizontal");
         moveInput.y = Input.GetAxis("Vertical");
-
+        if (!isGrounded && Input.GetKeyDown(KeyCode.Space))
+            animator.SetTrigger("Air Spin");
         if (Input.GetKeyDown(KeyCode.Space))
             isJumpPressed = true;
 
@@ -55,17 +66,20 @@ public class RagdollPlayerMovement : MonoBehaviour
             animator.SetTrigger("LeftPunch");
         if (Input.GetKeyDown(KeyCode.Mouse1))
             animator.SetTrigger("RightPunch");
+        
     }
 
     
-    //Actualiza los parámetros del animador
+    //Actualiza los parï¿½metros del animador
     private void UpdateAnimations()
     {
+        animator.SetBool("Jumping", !isGrounded);
         animator.SetBool("Walking", moveInput.sqrMagnitude > 0.01f);
+        animator.SetBool("Grabing", Input.GetKey(KeyCode.E));
     }
 
     
-    //Verifica si el jugador está tocando el suelo usando un SphereCast
+    //Verifica si el jugador estï¿½ tocando el suelo usando un SphereCast
     private void CheckGroundStatus()
     {
         isGrounded = false;
@@ -83,7 +97,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     }
 
 
-    //Aplica gravedad adicional cuando el jugador está en el aire
+    //Aplica gravedad adicional cuando el jugador estï¿½ en el aire
     private void ApplyGravity()
     {
         if (!isGrounded)
@@ -91,7 +105,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     }
 
 
-    //Maneja el movimiento del jugador relativo a la cámara
+    //Maneja el movimiento del jugador relativo a la cï¿½mara
     private void HandleMovement()
     {
         Vector3 movementDirection = GetCameraRelativeMovement();
@@ -106,7 +120,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     }
 
 
-    //Calcula la dirección del movimiento relativa a la orientación de la cámara
+    //Calcula la direcciï¿½n del movimiento relativa a la orientaciï¿½n de la cï¿½mara
     private Vector3 GetCameraRelativeMovement()
     {
         Vector3 camForward = cameraTransform.forward;
@@ -123,13 +137,13 @@ public class RagdollPlayerMovement : MonoBehaviour
     }
 
     
-    //Rota suavemente al jugador hacia la dirección del movimiento
+    //Rota suavemente al jugador hacia la direcciï¿½n del movimiento
     private void RotatePlayerTowardsMovement(Vector3 direction)
     {
         float angleY = Mathf.Atan2(direction.x, direction.z) * Mathf.Rad2Deg;
         Quaternion targetRotation = Quaternion.Euler(0f, angleY, 0f);
 
-        //Invertir la rotación porque ConfigurableJoint trabaja en espacio local invertido
+        //Invertir la rotaciï¿½n porque ConfigurableJoint trabaja en espacio local invertido
         mainJoint.targetRotation = Quaternion.Slerp(
             mainJoint.targetRotation,
             Quaternion.Inverse(targetRotation),
@@ -137,7 +151,7 @@ public class RagdollPlayerMovement : MonoBehaviour
         );
     }
 
-    //Aplica fuerza de movimiento si no se ha alcanzado la velocidad máxima
+    //Aplica fuerza de movimiento si no se ha alcanzado la velocidad mï¿½xima
     private void ApplyMovementForce(Vector3 direction, float inputMagnitude)
     {
         float currentVelocity = Vector3.Dot(direction, rb.velocity);
@@ -159,7 +173,37 @@ public class RagdollPlayerMovement : MonoBehaviour
         }
     }
 
-    //Sincroniza los objetos de física con la animación
+    void MakeRagdoll()
+    {
+        JointDrive jointDrive = mainJoint.slerpDrive;
+        jointDrive.positionSpring = 0;
+        mainJoint.slerpDrive = jointDrive;
+        
+        for (int i=0; i < syncPhysicsObjects.Length; i++)
+        {
+            syncPhysicsObjects[i].MakeRagdoll();
+        }
+        isActiveRagdoll=false;
+    }
+
+    void MakeActiveRagdoll()
+    {
+        JointDrive jointDrive = mainJoint.slerpDrive;
+        jointDrive.positionSpring = startSlerpPositionSpring;
+        mainJoint.slerpDrive = jointDrive;
+
+        for (int i=0; i < syncPhysicsObjects.Length; i++)
+            syncPhysicsObjects[i].MakeActiveRagdoll();
+
+        isActiveRagdoll=true;
+    }
+
+    public void OnPlayerBodyPartHit()
+    {
+        MakeRagdoll();
+    }
+
+    //Sincroniza los objetos de fï¿½sica con la animaciï¿½n
     private void SyncPhysicsWithAnimation()
     {
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
