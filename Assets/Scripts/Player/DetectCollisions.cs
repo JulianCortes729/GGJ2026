@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.Diagnostics;
 
 public class DetectCollisions : MonoBehaviour
 {
@@ -12,15 +13,18 @@ public class DetectCollisions : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-        ragdollPlayer = GetComponent<RagdollPlayerMovement>();
+        ragdollPlayer = GetComponentInParent<RagdollPlayerMovement>();
         rb = GetComponent<Rigidbody>();
     }
 
     void OnCollisionEnter(Collision collision)
     {
         if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamage") || CollisionIsPlayer(collision))
+        {
+            Debug.Log("Not valid collision"+ !ragdollPlayer.IsActiveRAgdoll + " " + !collision.transform.CompareTag("CauseDamage") + " " + CollisionIsPlayer(collision));
             return;
-        
+        }
+
         int numberOfContacts = collision.GetContacts(contactPoints);
 
         for (int i=0; i<numberOfContacts; i++)
@@ -31,7 +35,19 @@ public class DetectCollisions : MonoBehaviour
             if (contactImpulse.magnitude < 15)
                 continue;
             
+            Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
+        
+            ragdollPlayer.OnPlayerBodyPartHit();
+
+            Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
+
+            forceDirection = Vector3.ClampMagnitude(forceDirection, 30);
+
+            Debug.DrawRay(rb.position, forceDirection*40, Color.red);
             
+            Debug.Log("force aplied: "+forceDirection);
+
+            rb.AddForce(forceDirection, ForceMode.Impulse);
         }
     }
 
