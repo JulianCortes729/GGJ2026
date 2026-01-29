@@ -198,7 +198,7 @@ public class RagdollPlayerMovement : MonoBehaviour
         isActiveRagdoll = true;
     }
 
-    public void OnPlayerBodyPartHit()
+    public void OnBodyPartHit()
     {
         MakeRagdoll();
     }

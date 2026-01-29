@@ -112,7 +112,7 @@ public class AIEnemyController : RagdollController
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
         bool playerInRange = distanceToPlayer < detectionRange;
 
-        //Si no tiene máscara, buscar una
+        //Si no tiene mï¿½scara, buscar una
         if (!maskController.HasMask())
         {
             if (currentState != AIState.SeekingMask && currentState != AIState.ApproachingMask)
@@ -122,8 +122,8 @@ public class AIEnemyController : RagdollController
             return;
         }
 
-        //Si el jugador está en rango y tiene máscara
-        if (playerInRange && playerMaskController.HasMask())
+        //Si el jugador estï¿½ en rango y tiene mï¿½scara
+        if (playerInRange)
         {
             MaskType myMask = maskController.GetCurrentMaskType();
             MaskType playerMask = playerMaskController.GetCurrentMaskType().GetValueOrDefault();
@@ -290,7 +290,7 @@ public class AIEnemyController : RagdollController
             if (maskObj == maskController.GetCurrentMaskObject())
                 continue;
 
-            // Verificar si está equipada
+            // Verificar si estï¿½ equipada
             if (maskObj.transform.parent != null)
             {
                 bool isInPool = maskObj.transform.parent.GetComponent<MaskPoolManager>() != null;

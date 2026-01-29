@@ -33,6 +33,9 @@ public class AIRagdollMovement : MonoBehaviour
     [SerializeField] private bool showDebugGizmos = false;
 
     private SyncPhysicsObject[] syncPhysicsObjects;
+    private float startSlerpPositionSpring = 0f;
+    bool isActiveRagdoll = true;
+    public bool IsActiveRAgdoll => isActiveRagdoll;
     private AIEnemyController controller;
     private Vector2 moveInput;
 
@@ -250,7 +253,7 @@ public class AIRagdollMovement : MonoBehaviour
         if (!showDebugGizmos || rb == null)
             return;
 
-        // Mostrar dirección de movimiento
+        // Mostrar direcciï¿½n de movimiento
         if (moveInput.sqrMagnitude > 0.01f)
         {
             Vector3 localDirection = new Vector3(moveInput.x, 0, moveInput.y);
@@ -264,9 +267,39 @@ public class AIRagdollMovement : MonoBehaviour
         Gizmos.color = Color.blue;
         Gizmos.DrawRay(rb.position, rb.velocity);
 
-        // Mostrar detección de suelo
+        // Mostrar detecciï¿½n de suelo
         Gizmos.color = isGrounded ? Color.green : Color.red;
         Gizmos.DrawWireSphere(rb.position, groundCheckRadius);
         Gizmos.DrawRay(rb.position + Vector3.up * 0.1f, Vector3.down * groundCheckDistance);
+    }
+
+    void MakeRagdoll()
+    {
+        JointDrive jointDrive = mainJoint.slerpDrive;
+        jointDrive.positionSpring = 0;
+        mainJoint.slerpDrive = jointDrive;
+
+        for (int i = 0; i < syncPhysicsObjects.Length; i++)
+        {
+            syncPhysicsObjects[i].MakeRagdoll();
+        }
+        isActiveRagdoll = false;
+    }
+
+    void MakeActiveRagdoll()
+    {
+        JointDrive jointDrive = mainJoint.slerpDrive;
+        jointDrive.positionSpring = startSlerpPositionSpring;
+        mainJoint.slerpDrive = jointDrive;
+
+        for (int i = 0; i < syncPhysicsObjects.Length; i++)
+            syncPhysicsObjects[i].MakeActiveRagdoll();
+
+        isActiveRagdoll = true;
+    }
+
+    public void OnBodyPartHit()
+    {
+        MakeRagdoll();
     }
 }

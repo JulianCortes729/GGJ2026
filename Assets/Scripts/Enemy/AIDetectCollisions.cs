@@ -3,17 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Diagnostics;
 
-public class DetectCollisions : MonoBehaviour
+public class AIDetectCollisions : MonoBehaviour
 {
 
-    RagdollPlayerMovement ragdollPlayer;
+    AIRagdollMovement ragdollPlayer;
     Rigidbody rb;
     ContactPoint[] contactPoints= new ContactPoint[5];
 
     // Start is called before the first frame update
     void Awake()
     {
-        ragdollPlayer = GetComponentInParent<RagdollPlayerMovement>();
+        ragdollPlayer = GetComponentInParent<AIRagdollMovement>();
         rb = GetComponent<Rigidbody>();
     }
 

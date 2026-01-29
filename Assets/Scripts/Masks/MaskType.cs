@@ -21,12 +21,13 @@ public static class MaskAdvantageSystem
     //Determina si maskA tiene ventaja sobre maskB
     public static bool HasAdvantage(MaskType maskA, MaskType maskB)
     {
-        if (maskA == MaskType.None || maskB == MaskType.None)
+        if (maskA == MaskType.None)
             return false;
 
         return (maskA == MaskType.RedMask && maskB == MaskType.GreenMask) ||
                (maskA == MaskType.GreenMask && maskB == MaskType.BlueMask) ||
-               (maskA == MaskType.BlueMask && maskB == MaskType.RedMask);
+               (maskA == MaskType.BlueMask && maskB == MaskType.RedMask ) || 
+               (maskB == MaskType.None);
     }
 
     
@@ -36,7 +37,7 @@ public static class MaskAdvantageSystem
         return HasAdvantage(maskB, maskA);
     }
 
-    //Devuelve la máscara que gana contra targetMask
+    //Devuelve la mï¿½scara que gana contra targetMask
     public static MaskType GetCounterMask(MaskType targetMask)
     {
         switch (targetMask)
@@ -53,18 +54,18 @@ public static class MaskAdvantageSystem
     }
 
 
-    //Devuelve el multiplicador de daño basado en la relación de máscaras
+    //Devuelve el multiplicador de daï¿½o basado en la relaciï¿½n de mï¿½scaras
     public static float GetDamageMultiplier(MaskType attackerMask, MaskType defenderMask)
     {
         if (HasAdvantage(attackerMask, defenderMask))
-            return 2.0f; // El doble de daño con ventaja
+            return 2.0f; // El doble de daï¿½o con ventaja
         else if (HasDisadvantage(attackerMask, defenderMask))
-            return 0.5f; // Mitad de daño con desventaja
+            return 0.5f; // Mitad de daï¿½o con desventaja
         else
-            return 1.0f; // Daño normal
+            return 1.0f; // Daï¿½o normal
     }
 
-    //Compara dos máscaras y devuelve un string descriptivo
+    //Compara dos mï¿½scaras y devuelve un string descriptivo
     public static string GetRelationship(MaskType maskA, MaskType maskB)
     {
         if (maskA == MaskType.None || maskB == MaskType.None)
