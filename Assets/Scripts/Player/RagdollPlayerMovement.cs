@@ -21,8 +21,11 @@ public class RagdollPlayerMovement : MonoBehaviour
     private RaycastHit[] raycastHits = new RaycastHit[10];
     private SyncPhysicsObject[] syncPhysicsObjects;
 
+    RagdollController controller;
+
     void Awake()
     {
+        controller = GetComponent<RagdollController>();
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
     }
 
