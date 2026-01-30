@@ -255,6 +255,7 @@ MonoBehaviour:
   mainJoint: {fileID: 6534171157590577768}
   cameraTransform: {fileID: 0}
   animator: {fileID: 9178315476697175441}
+  maxHitsBeforeRagdoll: 3
   maxSpeed: 5
   moveForce: 30
   jumpMultiplier: 20
@@ -438,6 +439,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 6618488590295327262}
+    - targetCorrespondingSourceObject: {fileID: 7036213049465896255, guid: 45d23e2e8094b4640995559f03881636,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3506547711994131759}
     - targetCorrespondingSourceObject: {fileID: 1612254181613754387, guid: 45d23e2e8094b4640995559f03881636,
         type: 3}
       insertIndex: -1
@@ -522,6 +527,10 @@ PrefabInstance:
         type: 3}
       insertIndex: -1
       addedObject: {fileID: 5203087679685096601}
+    - targetCorrespondingSourceObject: {fileID: 3543154007508613845, guid: 45d23e2e8094b4640995559f03881636,
+        type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3558790978993142579}
     - targetCorrespondingSourceObject: {fileID: 2146593577657222455, guid: 45d23e2e8094b4640995559f03881636,
         type: 3}
       insertIndex: -1
@@ -1291,6 +1300,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f31c805f2cda34e9ec6c6ef2a97c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3558790978993142579
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2486738694024520177}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7fbcc23af7f8145bd8017c2050b9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisCollider: {fileID: 5770547126801230746}
+  collidersToIgnore:
+  - {fileID: 7917831795911731618}
+  - {fileID: 2081976413582159571}
 --- !u!1 &2847134743512020105 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: -5464439128547037267, guid: 45d23e2e8094b4640995559f03881636,
@@ -2341,6 +2366,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 69f31c805f2cda34e9ec6c6ef2a97c04, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3506547711994131759
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8218156844114273819}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ab7fbcc23af7f8145bd8017c2050b9b6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  thisCollider: {fileID: 4976616393524838091}
+  collidersToIgnore:
+  - {fileID: 7917831795911731618}
+  - {fileID: 2081976413582159571}
 --- !u!1001 &3329700428257552384
 PrefabInstance:
   m_ObjectHideFlags: 0

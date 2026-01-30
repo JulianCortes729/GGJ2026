@@ -9,6 +9,13 @@ public class RagdollPlayerMovement : MonoBehaviour
     [SerializeField] private Transform cameraTransform;
     [SerializeField] private Animator animator;
 
+    [SerializeField] private int maxHitsBeforeRagdoll=0;
+    private int currentHitsBeforeRagdoll;
+    public int CurrentHitsBeforeRagdoll => currentHitsBeforeRagdoll;
+    private bool canBeLaunched=false;
+    public bool CanBeLaunched=>canBeLaunched;
+    private float lastTimeRagdoll=0;
+
     private Vector2 moveInput;
     private bool isJumpPressed;
     private bool isGrounded;
@@ -22,6 +29,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     private SyncPhysicsObject[] syncPhysicsObjects;
 
     private float startSlerpPositionSpring = 0f;
+
     bool isActiveRagdoll = true;
     public bool IsActiveRAgdoll => isActiveRagdoll;
 
@@ -29,6 +37,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     void Awake()
     {
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        currentHitsBeforeRagdoll=maxHitsBeforeRagdoll;
     }
 
     void Start()
@@ -66,7 +75,11 @@ public class RagdollPlayerMovement : MonoBehaviour
             animator.SetTrigger("LeftPunch");
         if (Input.GetKeyDown(KeyCode.Mouse1))
             animator.SetTrigger("RightPunch");
-
+        if (!isActiveRagdoll && Time.time - lastTimeRagdoll > 3 && Input.GetKeyDown(KeyCode.F))
+        {
+            MakeActiveRagdoll();
+            canBeLaunched = true;
+        }
     }
 
 
@@ -184,6 +197,7 @@ public class RagdollPlayerMovement : MonoBehaviour
             syncPhysicsObjects[i].MakeRagdoll();
         }
         isActiveRagdoll = false;
+        lastTimeRagdoll= Time.time;
     }
 
     void MakeActiveRagdoll()
@@ -193,14 +207,20 @@ public class RagdollPlayerMovement : MonoBehaviour
         mainJoint.slerpDrive = jointDrive;
 
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
+        {
             syncPhysicsObjects[i].MakeActiveRagdoll();
-
+        }
         isActiveRagdoll = true;
     }
 
     public void OnBodyPartHit()
     {
-        MakeRagdoll();
+        if (currentHitsBeforeRagdoll <= 0)
+        {
+            MakeRagdoll();
+        }
+        currentHitsBeforeRagdoll--;
+        Debug.Log("Current Hits before ragdoll: "+ currentHitsBeforeRagdoll);
     }
 
     //Sincroniza los objetos de f�sica con la animaci�n

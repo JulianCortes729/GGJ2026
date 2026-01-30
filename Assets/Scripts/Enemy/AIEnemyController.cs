@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -21,6 +20,7 @@ public class AIEnemyController : RagdollController
     [SerializeField] private AIMaskController maskController;
     [SerializeField] private Transform playerTransform;
     [SerializeField] private PlayerMaskController playerMaskController;
+    [SerializeField] private Animator animator;
 
     [Header("AI Settings")]
     [SerializeField] private float detectionRange = 20f;
@@ -39,8 +39,12 @@ public class AIEnemyController : RagdollController
     private float lastMaskSearchTime;
     private float maskSearchInterval = 1f;
 
+    [SerializeField] private float atackCooldown = 2f;
+
     [Header("Debug")]
     [SerializeField] private bool showDebugGizmos = false;
+    private float lastAtackTime=0f;
+    private List<string> armsAnimations= new List<string>{"LeftPunch","RightPunch"};
 
     private void Awake()
     {
@@ -226,6 +230,11 @@ public class AIEnemyController : RagdollController
         if (distanceToPlayer <= approachDistance)
         {
             maskController.TryUseAbility();
+            if (Time.time-atackCooldown> lastAtackTime)
+            {
+                animator.SetTrigger(armsAnimations[Random.Range(0,2)]);
+                lastAtackTime=Time.time;
+            }
         }
     }
 

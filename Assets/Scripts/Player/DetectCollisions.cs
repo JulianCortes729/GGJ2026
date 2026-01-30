@@ -21,7 +21,6 @@ public class DetectCollisions : MonoBehaviour
     {
         if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamage") || CollisionIsPlayer(collision))
         {
-            Debug.Log("Not valid collision"+ !ragdollPlayer.IsActiveRAgdoll + " " + !collision.transform.CompareTag("CauseDamage") + " " + CollisionIsPlayer(collision));
             return;
         }
 
@@ -32,28 +31,40 @@ public class DetectCollisions : MonoBehaviour
             ContactPoint contactPoint= contactPoints[i];
             Vector3 contactImpulse = contactPoint.impulse / Time.fixedDeltaTime;
 
-            if (contactImpulse.magnitude < 15)
+            if (contactImpulse.magnitude < 15 || !ragdollPlayer.IsActiveRAgdoll)
                 continue;
             
             Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
-        
+
             ragdollPlayer.OnBodyPartHit();
+            if (!ragdollPlayer.CanBeLaunched)
+            {
+                Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
 
-            Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
+                forceDirection = Vector3.ClampMagnitude(forceDirection, 25);
+                
+                Debug.Log("Small Hit, force aplied: "+forceDirection);
+    
+                rb.AddForce(forceDirection, ForceMode.Impulse);
+            }
+            else if(ragdollPlayer.CanBeLaunched)
+            {
+                Vector3 forceDirection = (contactImpulse +(Vector3.up * 8f)) *2;
 
-            forceDirection = Vector3.ClampMagnitude(forceDirection, 30);
-
-            Debug.DrawRay(rb.position, forceDirection*40, Color.red);
+                forceDirection = Vector3.ClampMagnitude(forceDirection, 100f);
+                
+                Debug.Log("Big Hit, force aplied: "+forceDirection);
+    
+                rb.AddForce(forceDirection, ForceMode.Impulse);
+            }
             
-            Debug.Log("force aplied: "+forceDirection);
-
-            rb.AddForce(forceDirection, ForceMode.Impulse);
+            
         }
     }
 
     private bool CollisionIsPlayer(Collision collision)
     {
-        return collision.collider.transform.root == ragdollPlayer;
+        return collision.collider.transform.root == ragdollPlayer.transform;
     }
 
 }

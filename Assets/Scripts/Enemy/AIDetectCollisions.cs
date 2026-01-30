@@ -21,7 +21,6 @@ public class AIDetectCollisions : MonoBehaviour
     {
         if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamage") || CollisionIsPlayer(collision))
         {
-            Debug.Log("Not valid collision"+ !ragdollPlayer.IsActiveRAgdoll + " " + !collision.transform.CompareTag("CauseDamage") + " " + CollisionIsPlayer(collision));
             return;
         }
 
@@ -53,7 +52,7 @@ public class AIDetectCollisions : MonoBehaviour
 
     private bool CollisionIsPlayer(Collision collision)
     {
-        return collision.collider.transform.root == ragdollPlayer;
+        return collision.collider.transform.root == ragdollPlayer.transform;
     }
 
 }
