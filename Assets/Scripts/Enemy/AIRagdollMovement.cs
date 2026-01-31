@@ -76,6 +76,7 @@ public class AIRagdollMovement : MonoBehaviour
             if (Time.time - lastTimeRagdoll > 3)
             {
                 MakeActiveRagdoll();
+                canBeLaunched = true;
             }
         }
         else if (controller != null)
@@ -318,24 +319,19 @@ public class AIRagdollMovement : MonoBehaviour
         canBeLaunched = true;
     }
 
-    public void OnBodyPartHit()
-    {
-        OnNeutralBodyPartHit();
-    }
-
     public void OnAdvantageBodyPartHit()
     {
-        ApplyHit(2);
+        ApplyHit(5);
     }
 
     public void OnDisvantageBodyPartHit()
     {
-        ApplyHit(0);
+        ApplyHit(1);
     }
 
     public void OnNeutralBodyPartHit()
     {
-        ApplyHit(1);
+        ApplyHit(2);
     }
 
     private void ApplyHit(int damage)
