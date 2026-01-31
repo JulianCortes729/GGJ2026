@@ -302,7 +302,7 @@ public class AIRagdollMovement : MonoBehaviour
         }
         isActiveRagdoll = false;
         lastTimeRagdoll = Time.time;
-        canBeLaunched = false;
+        canBeLaunched = true; //Permitir que sea lanzada cuando está noqueada
     }
 
     void MakeActiveRagdoll()
@@ -313,7 +313,7 @@ public class AIRagdollMovement : MonoBehaviour
 
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
             syncPhysicsObjects[i].MakeActiveRagdoll();
-        
+
         isActiveRagdoll = true;
         canBeLaunched = true;
     }
