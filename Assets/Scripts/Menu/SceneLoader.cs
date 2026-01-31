@@ -4,7 +4,7 @@ public static class SceneLoader
 {
     public static void LoadGameScene()
     {
-        SceneManager.LoadScene("SceneConPausa");
+        SceneManager.LoadScene("SampleScene");
     }
 
     public static void LoadMenuScene()
