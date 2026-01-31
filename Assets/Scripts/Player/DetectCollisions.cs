@@ -49,7 +49,7 @@ public class DetectCollisions : MonoBehaviour
             }
             else if(ragdollPlayer.CanBeLaunched)
             {
-                Vector3 forceDirection = (contactImpulse +(Vector3.up * 8f)) *2;
+                Vector3 forceDirection = (contactImpulse +(Vector3.up * 15f)) *2;
 
                 forceDirection = Vector3.ClampMagnitude(forceDirection, 100f);
                 

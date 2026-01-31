@@ -19,7 +19,7 @@ public class AIDetectCollisions : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamage") || CollisionIsPlayer(collision))
+        if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamageToEnemy") || CollisionIsPlayer(collision))
         {
             return;
         }
