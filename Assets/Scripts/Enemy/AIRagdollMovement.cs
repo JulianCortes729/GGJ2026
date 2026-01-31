@@ -32,17 +32,25 @@ public class AIRagdollMovement : MonoBehaviour
     [Header("Debug")]
     [SerializeField] private bool showDebugGizmos = false;
 
+    [Header("Combat")]
+    [SerializeField] private int maxHitsBeforeRagdoll = 5;
+    private int currentHitsBeforeRagdoll;
+    private bool canBeLaunched = false;
+    public bool CanBeLaunched => canBeLaunched;
+
     private SyncPhysicsObject[] syncPhysicsObjects;
     private float startSlerpPositionSpring = 0f;
     bool isActiveRagdoll = true;
     public bool IsActiveRAgdoll => isActiveRagdoll;
     private AIEnemyController controller;
     private Vector2 moveInput;
+    private float lastTimeRagdoll = 0;
 
     private void Awake()
     {
         controller = GetComponent<AIEnemyController>();
         syncPhysicsObjects = GetComponentsInChildren<SyncPhysicsObject>();
+        currentHitsBeforeRagdoll = maxHitsBeforeRagdoll;
 
         if (navAgent != null)
         {
@@ -57,11 +65,20 @@ public class AIRagdollMovement : MonoBehaviour
         {
             rb.drag = 1f;
         }
+        startSlerpPositionSpring = mainJoint.slerpDrive.positionSpring;
     }
 
     private void Update()
     {
-        if (controller != null)
+        if (!isActiveRagdoll)
+        {
+            moveInput = Vector2.zero;
+            if (Time.time - lastTimeRagdoll > 3)
+            {
+                MakeActiveRagdoll();
+            }
+        }
+        else if (controller != null)
         {
             moveInput = controller.movementVector;
         }
@@ -284,6 +301,8 @@ public class AIRagdollMovement : MonoBehaviour
             syncPhysicsObjects[i].MakeRagdoll();
         }
         isActiveRagdoll = false;
+        lastTimeRagdoll = Time.time;
+        canBeLaunched = false;
     }
 
     void MakeActiveRagdoll()
@@ -294,12 +313,38 @@ public class AIRagdollMovement : MonoBehaviour
 
         for (int i = 0; i < syncPhysicsObjects.Length; i++)
             syncPhysicsObjects[i].MakeActiveRagdoll();
-
+        
         isActiveRagdoll = true;
+        canBeLaunched = true;
     }
 
     public void OnBodyPartHit()
     {
-        MakeRagdoll();
+        OnNeutralBodyPartHit();
+    }
+
+    public void OnAdvantageBodyPartHit()
+    {
+        ApplyHit(2);
+    }
+
+    public void OnDisvantageBodyPartHit()
+    {
+        ApplyHit(0);
+    }
+
+    public void OnNeutralBodyPartHit()
+    {
+        ApplyHit(1);
+    }
+
+    private void ApplyHit(int damage)
+    {
+        if (currentHitsBeforeRagdoll <= 0)
+        {
+            MakeRagdoll();
+        }
+        currentHitsBeforeRagdoll -= damage;
+        Debug.Log("AI Current Hits before ragdoll: " + currentHitsBeforeRagdoll);
     }
 }

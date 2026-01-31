@@ -6,20 +6,22 @@ using UnityEngine.Diagnostics;
 public class AIDetectCollisions : MonoBehaviour
 {
 
-    AIRagdollMovement ragdollPlayer;
+    AIRagdollMovement ragdollAI;
     Rigidbody rb;
     ContactPoint[] contactPoints= new ContactPoint[5];
+    AIMaskController maskController;
 
     // Start is called before the first frame update
     void Awake()
     {
-        ragdollPlayer = GetComponentInParent<AIRagdollMovement>();
+        ragdollAI = GetComponentInParent<AIRagdollMovement>();
         rb = GetComponent<Rigidbody>();
+        maskController = GetComponentInParent<AIMaskController>();
     }
 
     void OnCollisionEnter(Collision collision)
     {
-        if (!ragdollPlayer.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamageToEnemy") || CollisionIsPlayer(collision))
+        if (!ragdollAI.IsActiveRAgdoll || !collision.transform.CompareTag("CauseDamageToEnemy") || CollisionIsPlayer(collision))
         {
             return;
         }
@@ -39,23 +41,52 @@ public class AIDetectCollisions : MonoBehaviour
                 
             Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
         
-            ragdollPlayer.OnBodyPartHit();
-
-            Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
-
-            forceDirection = Vector3.ClampMagnitude(forceDirection, 30);
-
-            Debug.DrawRay(rb.position, forceDirection*40, Color.red);
+            MaskType myMask = maskController != null ? maskController.GetCurrentMaskType() : MaskType.None;
             
-            Debug.Log("force aplied: "+forceDirection);
+            PlayerMaskController enemyController = collision.collider.GetComponentInParent<PlayerMaskController>();
+            MaskType enemyMask = enemyController != null && enemyController.GetCurrentMaskType().HasValue ? enemyController.GetCurrentMaskType().Value : MaskType.None;
 
-            rb.AddForce(forceDirection, ForceMode.Impulse);
+            if (MaskAdvantageSystem.HasAdvantage(enemyMask, myMask))
+            {
+                ragdollAI.OnAdvantageBodyPartHit();
+            }
+            else if (MaskAdvantageSystem.HasDisadvantage(enemyMask, myMask))
+            {
+                ragdollAI.OnDisvantageBodyPartHit();
+            }
+            else
+            {
+                ragdollAI.OnNeutralBodyPartHit();
+            }
+
+            if (!ragdollAI.CanBeLaunched)
+            {
+                Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
+
+                forceDirection = Vector3.ClampMagnitude(forceDirection, 30);
+
+                Debug.DrawRay(rb.position, forceDirection*40, Color.red);
+            
+                Debug.Log("force aplied: "+forceDirection);
+
+                rb.AddForce(forceDirection, ForceMode.Impulse);
+            }
+            else if(ragdollAI.CanBeLaunched)
+            {
+                Vector3 forceDirection = (contactImpulse + (Vector3.up * 15f)) * 2;
+
+                forceDirection = Vector3.ClampMagnitude(forceDirection, 100f);
+                
+                Debug.DrawRay(rb.position, forceDirection*40, Color.red);
+                Debug.Log("Big Hit, force aplied: "+forceDirection);
+                rb.AddForce(forceDirection, ForceMode.Impulse);
+            }
         }
     }
 
     private bool CollisionIsPlayer(Collision collision)
     {
-        return collision.collider.transform.root == ragdollPlayer.transform;
+        return collision.collider.transform.root == ragdollAI.transform;
     }
 
 }
