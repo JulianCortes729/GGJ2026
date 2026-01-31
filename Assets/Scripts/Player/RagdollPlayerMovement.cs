@@ -226,17 +226,17 @@ public class RagdollPlayerMovement : MonoBehaviour
 
     public void OnAdvantageBodyPartHit()
     {
-        ApplyHit(2);
+        ApplyHit(5);
     }
 
     public void OnDisvantageBodyPartHit()
     {
-        ApplyHit(0);
+        ApplyHit(1);
     }
 
     public void OnNeutralBodyPartHit()
     {
-        ApplyHit(1);
+        ApplyHit(2);
     }
 
     private void ApplyHit(int damage)
