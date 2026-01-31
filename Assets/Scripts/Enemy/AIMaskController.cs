@@ -24,6 +24,7 @@ public class AIMaskController : MonoBehaviour
         }
     }
 
+    //Intenta recoger una máscara. Solo recoge si es diferente a la actual.
     public bool TryPickupMask(GameObject maskObject)
     {
         if (maskObject == null)
@@ -33,8 +34,21 @@ public class AIMaskController : MonoBehaviour
         if (distance > pickupRange)
             return false;
 
+        // No hacer nada si ya tenemos esta misma máscara equipada
         if (currentMaskObject == maskObject)
             return false;
+
+        //Verificar si la máscara es del mismo tipo que ya tenemos
+        //Si ya tenemos el mismo tipo, no cambiar
+        Mask newMask = maskObject.GetComponent<Mask>();
+        if (newMask != null && currentMask != null)
+        {
+            if (newMask.GetMaskType() == currentMask.GetMaskType())
+            {
+                // Ya tenemos el mismo tipo de máscara, no cambiar
+                return false;
+            }
+        }
 
         PickupMask(maskObject);
         return true;
@@ -52,6 +66,7 @@ public class AIMaskController : MonoBehaviour
 
     private void PickupMask(GameObject maskObject)
     {
+        //Solo soltar si realmente vamos a recoger una nueva
         if (currentMaskObject != null)
         {
             DropCurrentMask();
@@ -73,12 +88,16 @@ public class AIMaskController : MonoBehaviour
         Collider col = maskObject.GetComponent<Collider>();
         if (col != null)
             col.enabled = false;
+
+        Debug.Log($"[AI {gameObject.name}] Equipó máscara: {currentMask.GetMaskType()}");
     }
 
     private void DropCurrentMask()
     {
         if (currentMaskObject == null)
             return;
+
+        Debug.Log($"[AI {gameObject.name}] Soltando máscara: {currentMask.GetMaskType()}");
 
         currentMaskObject.transform.SetParent(null);
 
