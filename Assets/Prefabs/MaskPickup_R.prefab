@@ -119,7 +119,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2f6116386cedc3847a6287bec6633ecf, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  maskType: 0
+  maskType: 1
   cooldown: 2
 --- !u!1001 &7273406357302784934
 PrefabInstance:
