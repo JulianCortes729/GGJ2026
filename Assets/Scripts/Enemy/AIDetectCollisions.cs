@@ -34,6 +34,9 @@ public class AIDetectCollisions : MonoBehaviour
             if (contactImpulse.magnitude < 15)
                 continue;
             
+            if (AudioManager.Instance != null)
+                AudioManager.PlaySFX(AudioManager.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
+                
             Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
         
             ragdollPlayer.OnBodyPartHit();

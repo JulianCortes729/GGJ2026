@@ -9,12 +9,14 @@ public class DetectCollisions : MonoBehaviour
     RagdollPlayerMovement ragdollPlayer;
     Rigidbody rb;
     ContactPoint[] contactPoints= new ContactPoint[5];
+    PlayerMaskController maskController;
 
     // Start is called before the first frame update
     void Awake()
     {
         ragdollPlayer = GetComponentInParent<RagdollPlayerMovement>();
         rb = GetComponent<Rigidbody>();
+        maskController = GetComponentInParent<PlayerMaskController>();
     }
 
     void OnCollisionEnter(Collision collision)
@@ -36,7 +38,27 @@ public class DetectCollisions : MonoBehaviour
             
             Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
 
-            ragdollPlayer.OnBodyPartHit();
+            if (AudioManager.Instance != null)
+                AudioManager.PlaySFX(AudioManager.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
+
+            MaskType myMask = maskController != null && maskController.GetCurrentMaskType().HasValue ? maskController.GetCurrentMaskType().Value : MaskType.None;
+            
+            PlayerMaskController enemyController = collision.collider.GetComponentInParent<PlayerMaskController>();
+            MaskType enemyMask = enemyController != null && enemyController.GetCurrentMaskType().HasValue ? enemyController.GetCurrentMaskType().Value : MaskType.None;
+
+            if (MaskAdvantageSystem.HasAdvantage(enemyMask, myMask))
+            {
+                ragdollPlayer.OnAdvantageBodyPartHit();
+            }
+            else if (MaskAdvantageSystem.HasDisadvantage(enemyMask, myMask))
+            {
+                ragdollPlayer.OnDisvantageBodyPartHit();
+            }
+            else
+            {
+                ragdollPlayer.OnNeutralBodyPartHit();
+            }
+            
             if (!ragdollPlayer.CanBeLaunched)
             {
                 Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;

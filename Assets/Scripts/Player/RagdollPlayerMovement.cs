@@ -64,6 +64,17 @@ public class RagdollPlayerMovement : MonoBehaviour
     //Captura los inputs del jugador (movimiento, salto, ataques)
     private void HandleInput()
     {
+        if (!isActiveRagdoll)
+        {
+            moveInput = Vector2.zero;
+            isJumpPressed = false;
+            if (Time.time - lastTimeRagdoll > 3 && Input.GetKeyDown(KeyCode.Space))
+            {
+                MakeActiveRagdoll();
+                canBeLaunched = true;
+            }
+            return;
+        }
         moveInput.x = Input.GetAxis("Horizontal");
         moveInput.y = Input.GetAxis("Vertical");
         if (!isGrounded && Input.GetKeyDown(KeyCode.Space))
@@ -75,11 +86,6 @@ public class RagdollPlayerMovement : MonoBehaviour
             animator.SetTrigger("LeftPunch");
         if (Input.GetKeyDown(KeyCode.Mouse1))
             animator.SetTrigger("RightPunch");
-        if (!isActiveRagdoll && Time.time - lastTimeRagdoll > 3 && Input.GetKeyDown(KeyCode.F))
-        {
-            MakeActiveRagdoll();
-            canBeLaunched = true;
-        }
     }
 
 
@@ -88,7 +94,7 @@ public class RagdollPlayerMovement : MonoBehaviour
     {
         animator.SetBool("Jumping", !isGrounded);
         animator.SetBool("Walking", moveInput.sqrMagnitude > 0.01f);
-        animator.SetBool("Grabing", Input.GetKey(KeyCode.E));
+        animator.SetBool("Grabing", isActiveRagdoll && Input.GetKey(KeyCode.E));
     }
 
 
@@ -215,11 +221,31 @@ public class RagdollPlayerMovement : MonoBehaviour
 
     public void OnBodyPartHit()
     {
+        OnNeutralBodyPartHit();
+    }
+
+    public void OnAdvantageBodyPartHit()
+    {
+        ApplyHit(2);
+    }
+
+    public void OnDisvantageBodyPartHit()
+    {
+        ApplyHit(0);
+    }
+
+    public void OnNeutralBodyPartHit()
+    {
+        ApplyHit(1);
+    }
+
+    private void ApplyHit(int damage)
+    {
         if (currentHitsBeforeRagdoll <= 0)
         {
             MakeRagdoll();
         }
-        currentHitsBeforeRagdoll--;
+        currentHitsBeforeRagdoll -= damage;
         Debug.Log("Current Hits before ragdoll: "+ currentHitsBeforeRagdoll);
     }
 
