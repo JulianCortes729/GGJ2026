@@ -19,6 +19,7 @@ public class AudioManager : MonoBehaviour
     [Header("SFX Clips")]
     public AudioClip onButtonClickClip;
     public AudioClip bellStart;
+    public AudioClip bellEnd;
 
     [Header("Player SFX")]
     public AudioClip jumpClip;
@@ -73,12 +74,12 @@ public class AudioManager : MonoBehaviour
     private void OnSceneLoaded(Scene escena, LoadSceneMode modo)
     {
 
-        if (escena.buildIndex == 0)
+        if (escena.buildIndex == 1)
         {
             ChangeMusic(menuMusic);
             ambientSource.Stop();
         }
-        else if (escena.buildIndex == 1 || escena.buildIndex == 2)
+        else if (escena.buildIndex == 2)
         {
             ChangeMusic(gameMusic);
             PlaySFX(bellStart);

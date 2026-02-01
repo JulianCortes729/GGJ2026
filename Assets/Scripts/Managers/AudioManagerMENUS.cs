@@ -102,7 +102,7 @@ public class AudioManagerMENUS : MonoBehaviour
 
     private void OnSceneLoaded(Scene escena, LoadSceneMode modo)
     {
-        // 1. Aseguramos que el audio esté "despausado" por si acaso
+        // 1. Aseguramos que el audio estï¿½ "despausado" por si acaso
         ResumeGameAudio();
 
         if (escena.buildIndex == 0)
@@ -115,7 +115,7 @@ public class AudioManagerMENUS : MonoBehaviour
             ChangeMusic(gameMusic);
             PlayAmbient(ambientSound);
 
-            //Usamos una corutina para dar un pequeño respiro
+            //Usamos una corutina para dar un pequeï¿½o respiro
             //antes de tocar la campana. Esto garantiza que se escuche al reiniciar.
             if (bellStart != null)
             {
@@ -139,7 +139,7 @@ public class AudioManagerMENUS : MonoBehaviour
 
     private void RestoreAudioForGameplay()
     {
-        // Al reiniciar, nos aseguramos que todo esté "despausado" y listo
+        // Al reiniciar, nos aseguramos que todo estï¿½ "despausado" y listo
         ResumeGameAudio();
        
     }

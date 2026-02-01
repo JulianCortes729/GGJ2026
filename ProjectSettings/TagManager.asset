@@ -6,6 +6,10 @@ TagManager:
   tags:
   - CauseDamage
   - CauseDamageToEnemy
+  - OutOfRing
+  - Enemy
+  - Body
+  - Head
   layers:
   - Default
   - TransparentFX

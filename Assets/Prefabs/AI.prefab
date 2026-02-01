@@ -19,7 +19,7 @@ GameObject:
   - component: {fileID: 3422101861372773363}
   m_Layer: 0
   m_Name: AI
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -300,6 +300,7 @@ MonoBehaviour:
   stabilizationForce: 5
   maxTiltAngle: 45
   showDebugGizmos: 0
+  maxHitsBeforeRagdoll: 5
 --- !u!1 &817818861038777626
 GameObject:
   m_ObjectHideFlags: 0
@@ -442,6 +443,11 @@ PrefabInstance:
       propertyPath: m_TagString
       value: CauseDamage
       objectReference: {fileID: 0}
+    - target: {fileID: 3543154007508613845, guid: b39591bea14917f42ae96aecc27e9cb6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Head
+      objectReference: {fileID: 0}
     - target: {fileID: 4630361014267004090, guid: b39591bea14917f42ae96aecc27e9cb6,
         type: 3}
       propertyPath: m_TagString
@@ -461,6 +467,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_LocalPosition.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036213049465896255, guid: b39591bea14917f42ae96aecc27e9cb6,
+        type: 3}
+      propertyPath: m_TagString
+      value: Body
       objectReference: {fileID: 0}
     - target: {fileID: 8879528566716807029, guid: b39591bea14917f42ae96aecc27e9cb6,
         type: 3}

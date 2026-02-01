@@ -16,7 +16,7 @@ public class DefeatManager : MonoBehaviour
     {
         "TE SACARON DEL RING, VIEJO...",
         "TE NOQUEARON, MAESTRO",
-        "NO FUE TU DÍA, CAPO",
+        "NO FUE TU Dï¿½A, CAPO",
         "TE HICIERON PELOTA, BOLUDO",
         "TE CAGARON A TROMPADAS, CHE",
         "NO AGUANTASTE EL ROUND, WACHO",
@@ -48,7 +48,9 @@ public class DefeatManager : MonoBehaviour
         if (defeatPanel != null) defeatPanel.SetActive(true);
         if (defeatEffects != null) defeatEffects.SetActive(true);
 
-        // Solo manejamos el tiempo aquí. EL AUDIO LO MANEJA AUDIOMANAGER.
+        AudioManager.Instance.PlaySFX(AudioManager.Instance.bellEnd);
+
+        // Solo manejamos el tiempo aquï¿½. EL AUDIO LO MANEJA AUDIOMANAGER.
         if (pauseGameOnDefeat)
         {
             Time.timeScale = 0f;

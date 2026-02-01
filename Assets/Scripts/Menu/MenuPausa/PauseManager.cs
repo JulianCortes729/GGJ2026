@@ -13,7 +13,7 @@ public class PauseManager : MonoBehaviour
     private void Update()
     {
         // La tecla P solo DISPARA el evento.
-        if (Input.GetKeyDown(KeyCode.P))
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             if (isPaused)
                 PauseEvents.OnResumeGame?.Invoke();
@@ -55,23 +55,23 @@ public class PauseManager : MonoBehaviour
         if (pauseMenuUI != null) pauseMenuUI.SetActive(false);
     }
 
-    // Este método se ejecuta cuando alguien pulsa el botón "Reiniciar"
+    // Este mï¿½todo se ejecuta cuando alguien pulsa el botï¿½n "Reiniciar"
     private void ExecuteRestart()
     {
         Time.timeScale = 1f; // Siempre devolver el tiempo a 1 antes de cambiar escena
         isPaused = false;
 
-        // Cargamos la escena (asegúrate de tener tu script SceneLoader funcionando)
+        // Cargamos la escena (asegï¿½rate de tener tu script SceneLoader funcionando)
         SceneLoader.LoadGameScene();
     }
 
-    // Este método se ejecuta cuando alguien pulsa el botón "Salir al Menú"
+    // Este mï¿½todo se ejecuta cuando alguien pulsa el botï¿½n "Salir al Menï¿½"
     private void ExecuteReturnToMenu()
     {
         Time.timeScale = 1f;
         isPaused = false;
 
-        // Cargamos el menú
+        // Cargamos el menï¿½
         SceneLoader.LoadMenuScene();
     }
 }
