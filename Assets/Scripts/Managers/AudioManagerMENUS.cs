@@ -100,30 +100,42 @@ public class AudioManagerMENUS : MonoBehaviour
         VictoryEvents.OnReturnToMenuFromVictory -= StopAllAudio;
     }
 
+
     private void OnSceneLoaded(Scene escena, LoadSceneMode modo)
     {
-        // 1. Aseguramos que el audio est� "despausado" por si acaso
+        // === ZONA DE AUTODESTRUCCIÓN ===
+        // Si detectamos que estamos en el Menú Principal (Índice 0)
+        if (escena.buildIndex == 1)
+        {
+            // 1. Limpiamos la referencia estática para que nadie intente acceder a un muerto
+            if (Instance == this)
+            {
+                Instance = null;
+            }
+
+            // 2. Nos destruimos a nosotros mismos
+            Destroy(gameObject);
+
+            // 3. ¡IMPORTANTE! Return para que NO se ejecute nada más de este código
+            return;
+        }
+
+        // ============================================
+        // Si llegamos aquí, es que NO estamos en el menú, así que cargamos el audio normal.
+
         ResumeGameAudio();
 
-        if (escena.buildIndex == 0)
-        {
-            ChangeMusic(menuMusic);
-            ambientSource.Stop();
-        }
-        else if (escena.buildIndex == 1 || escena.buildIndex == 2)
+        if (escena.buildIndex == 2)
         {
             ChangeMusic(gameMusic);
             PlayAmbient(ambientSound);
 
-            //Usamos una corutina para dar un peque�o respiro
-            //antes de tocar la campana. Esto garantiza que se escuche al reiniciar.
             if (bellStart != null)
             {
                 StartCoroutine(PlaySFXWithDelay(bellStart, 1f, 1f, 0.2f));
             }
         }
     }
-
 
     public void PauseGameAudio()
     {
