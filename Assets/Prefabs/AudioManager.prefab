@@ -393,7 +393,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 4045207959666601758}
-  - component: {fileID: 5304232746522720646}
   - component: {fileID: 8998238113505635978}
   m_Layer: 0
   m_Name: AudioManager
@@ -420,38 +419,6 @@ Transform:
   - {fileID: 4918346856550289366}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5304232746522720646
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8951030845293302690}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 49dcd23125d54944b9b310f9b695584d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  musicSource: {fileID: 9096956227924026299}
-  ambientSource: {fileID: 4350149143631218271}
-  sfxSource: {fileID: 8464759845128596490}
-  menuMusic: {fileID: 0}
-  gameMusic: {fileID: 8300000, guid: 433e5ae2967b44247bccedf0ab3360c1, type: 3}
-  ambientSound: {fileID: 8300000, guid: 4d0c35cd15496ef4b9f2e851edb5639b, type: 3}
-  onButtonClickClip: {fileID: 0}
-  bellStart: {fileID: 8300000, guid: 2c9fb34d305264e49880032e06592578, type: 3}
-  bellEnd: {fileID: 8300000, guid: 86ea280c11714b54c9f7701d3d5164d5, type: 3}
-  jumpClip: {fileID: 0}
-  landClip: {fileID: 0}
-  punchSwingClip: {fileID: 0}
-  spinAttackClip: {fileID: 0}
-  ragdollImpactClip: {fileID: 8300000, guid: 01ec789dfd57ad34cb313b9873834121, type: 3}
-  maskPickupClip1: {fileID: 0}
-  maskPickupClip2: {fileID: 0}
-  maskPickupClip3: {fileID: 0}
-  uiHoverClip: {fileID: 0}
-  musicVolume: 1
-  sfxVolume: 1
 --- !u!114 &8998238113505635978
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -7,14 +7,6 @@ public class DefeatEjemplo : MonoBehaviour
     [Header("Player Health (Ejemplo)")]
     [SerializeField] private float playerHealth = 100f;
 
-    //Activar derrota al presionar una tecla (para testing)
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.F))
-        {
-            TriggerDefeat();
-        }
-    }
 
     //Cuando el jugador cae fuera del ring (3D)
     private void OnTriggerExit(Collider other)
