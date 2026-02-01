@@ -4,7 +4,13 @@ public abstract class Mask : MonoBehaviour
 {
     [SerializeField] protected MaskType maskType;
     [SerializeField] protected float cooldown = 2f;
+    [SerializeField] private GameObject[] maskModels;
     protected float cooldownTimer;
+
+    void Awake()
+    {
+        Instantiate(maskModels[Random.Range(0,3)], this.transform);
+    }
 
     public MaskType GetMaskType() => maskType;
 

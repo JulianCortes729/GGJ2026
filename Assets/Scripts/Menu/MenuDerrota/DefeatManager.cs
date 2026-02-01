@@ -48,7 +48,7 @@ public class DefeatManager : MonoBehaviour
         if (defeatPanel != null) defeatPanel.SetActive(true);
         if (defeatEffects != null) defeatEffects.SetActive(true);
 
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.bellEnd);
+        AudioManagerMENUS.Instance.PlaySFX(AudioManagerMENUS.Instance.bellEnd);
 
         // Solo manejamos el tiempo aqu�. EL AUDIO LO MANEJA AUDIOMANAGER.
         if (pauseGameOnDefeat)

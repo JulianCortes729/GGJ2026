@@ -38,8 +38,8 @@ public class DetectCollisions : MonoBehaviour
             
             Debug.Log("contactImpulse is: "+ contactImpulse.magnitude);
 
-            if (AudioManager.Instance != null)
-                AudioManager.PlaySFX(AudioManager.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
+            if (AudioManagerMENUS.Instance != null)
+                AudioManagerMENUS.PlaySFX(AudioManagerMENUS.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
 
             MaskType myMask = maskController != null && maskController.GetCurrentMaskType().HasValue ? maskController.GetCurrentMaskType().Value : MaskType.None;
             

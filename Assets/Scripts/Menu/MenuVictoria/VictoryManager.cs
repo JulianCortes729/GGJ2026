@@ -65,7 +65,7 @@ public class VictoryManager : MonoBehaviour
         if (victoryPanel != null) victoryPanel.SetActive(true);
         if (victoryEffects != null) victoryEffects.SetActive(true);
 
-        AudioManager.Instance.PlaySFX(AudioManager.Instance.bellEnd);
+        AudioManagerMENUS.Instance.PlaySFX(AudioManagerMENUS.Instance.bellEnd);
 
         // Solo controlamos UI y Tiempo. EL AUDIO VA POR EVENTOS.
         if (pauseGameOnVictory)

@@ -19,6 +19,7 @@ public class AudioManagerMENUS : MonoBehaviour
     [Header("SFX Clips")]
     public AudioClip onButtonClickClip;
     public AudioClip bellStart;
+    public AudioClip bellEnd;
 
     [Header("Player SFX")]
     public AudioClip jumpClip;

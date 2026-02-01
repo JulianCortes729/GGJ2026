@@ -21,7 +21,7 @@ public class AIDetectCollisions : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        //Verificar si es el propio jugador golpeándose a sí mismo
+        //Verificar si es el propio jugador golpeï¿½ndose a sï¿½ mismo
         if (CollisionIsPlayer(collision))
         {
             return;
@@ -43,12 +43,12 @@ public class AIDetectCollisions : MonoBehaviour
             if (contactImpulse.magnitude < 15)
                 continue;
 
-            if (AudioManager.Instance != null)
-                AudioManager.PlaySFX(AudioManager.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
+            if (AudioManagerMENUS.Instance != null)
+                AudioManagerMENUS.PlaySFX(AudioManagerMENUS.Instance.ragdollImpactClip, 1f, Random.Range(0.8f, 1.2f));
 
             Debug.Log("AI contactImpulse is: " + contactImpulse.magnitude);
 
-            //Solo aplicar daño si está en modo activo ragdoll
+            //Solo aplicar daï¿½o si estï¿½ en modo activo ragdoll
             if (ragdollAI.IsActiveRAgdoll)
             {
                 MaskType myMask = maskController != null ? maskController.GetCurrentMaskType() : MaskType.None;
@@ -70,7 +70,7 @@ public class AIDetectCollisions : MonoBehaviour
                 }
             }
 
-            //Aplicar fuerza física independientemente del estado
+            //Aplicar fuerza fï¿½sica independientemente del estado
             if (!ragdollAI.CanBeLaunched)
             {
                 Vector3 forceDirection = (contactImpulse + Vector3.up) * 0.25f;
