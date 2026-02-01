@@ -5,15 +5,6 @@ using UnityEngine;
 public class VictoryEjemplo : MonoBehaviour
 {
 
-    //Activar victoria al presionar una tecla (para testing)
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.V))
-        {
-            TriggerVictory();
-        }
-    }
-
     //Cuando un luchador cae fuera del ring (3D)
     private void OnTriggerExit(Collider other)
     {
