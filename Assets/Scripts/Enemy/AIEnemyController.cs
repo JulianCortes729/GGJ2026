@@ -1,6 +1,8 @@
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UI;
 
 public enum AIState
 {
@@ -44,8 +46,16 @@ public class AIEnemyController : RagdollController
     [Header("Debug")]
     [SerializeField] private bool showDebugGizmos = false;
     private float lastAtackTime = 0f;
-    private List<string> armsAnimations = new List<string> { "LeftPunch", "RightPunch" };
+    private int leftPunchHash;
+    private int rightPunchHash;
 
+    private Collider[] results = new Collider[15];
+    private Transform poolTransform;
+
+    private float pathUpdateInterval = 0.2f; //Actualizar camino 5 veces por segundo
+    private float lastPathUpdateTime;
+
+    //Inicializa referencias y cachea los Hashes de animación para evitar basura
     private void Awake()
     {
         if (navAgent == null)
@@ -53,8 +63,15 @@ public class AIEnemyController : RagdollController
 
         if (maskController == null)
             maskController = GetComponent<AIMaskController>();
+
+        poolTransform = FindObjectOfType<MaskPoolManager>()?.transform;
+
+        // Convertimos los strings a números UNA SOLA VEZ
+        leftPunchHash = Animator.StringToHash("LeftPunch");
+        rightPunchHash = Animator.StringToHash("RightPunch");
     }
 
+    //Configura NavAgent y desincroniza la IA
     private void Start()
     {
         if (navAgent != null)
@@ -63,20 +80,25 @@ public class AIEnemyController : RagdollController
             navAgent.updateRotation = false;
         }
 
+        //Desincronizar: Cada enemigo empieza con un offset aleatorio su 'reloj' mental.
+        lastMaskCheckTime = Time.time + Random.Range(0f, maskCheckInterval);
         ChangeState(AIState.Idle);
     }
 
+    //Loop principal de Unity
     private void Update()
     {
         UpdateIntent();
     }
 
+    //Conecta la lógica de IA con el movimiento físico del Ragdoll
     public override void UpdateIntent()
     {
         UpdateAIBehavior();
         UpdateMovementVector();
     }
 
+    //Máquina de estados: evalúa la situación y ejecuta el comportamiento actual
     private void UpdateAIBehavior()
     {
         if (Time.time - lastMaskCheckTime > maskCheckInterval)
@@ -108,6 +130,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Decide qué hacer (atacar, buscar máscara o huir) analizando el entorno
     private void EvaluateSituation()
     {
         if (playerTransform == null || playerMaskController == null)
@@ -131,6 +154,7 @@ public class AIEnemyController : RagdollController
         {
             MaskType myMask = maskController.GetCurrentMaskType();
             MaskType playerMask = playerMaskController.GetCurrentMaskType().GetValueOrDefault();
+            MaskType neededCounter = MaskAdvantageSystem.GetCounterMask(playerMask);
 
             bool hasAdvantage = MaskAdvantageSystem.HasAdvantage(myMask, playerMask);
             bool hasDisadvantage = MaskAdvantageSystem.HasDisadvantage(myMask, playerMask);
@@ -138,7 +162,7 @@ public class AIEnemyController : RagdollController
             if (hasDisadvantage)
             {
                 //Solo huir si hay una máscara disponible que nos dé ventaja
-                GameObject betterMask = FindBetterMaskAgainstPlayer();
+                GameObject betterMask = FindNearestMask(neededCounter);
 
                 if (betterMask != null)
                 {
@@ -170,6 +194,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Comportamiento en reposo: si no tiene máscara, empieza a buscar
     private void HandleIdleState()
     {
         if (!maskController.HasMask())
@@ -178,13 +203,14 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Busca activamente máscaras cercanas periódicamente
     private void HandleSeekingMaskState()
     {
         if (Time.time - lastMaskSearchTime > maskSearchInterval)
         {
             lastMaskSearchTime = Time.time;
 
-            GameObject bestMask = FindBestAvailableMask();
+            GameObject bestMask = FindNearestMask(null);
 
             if (bestMask != null)
             {
@@ -198,6 +224,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Se mueve hacia la máscara objetivo y la recoge si está en rango (Pathfinding optimizado)
     private void HandleApproachingMaskState()
     {
         if (targetMaskObject == null || !targetMaskObject.activeInHierarchy)
@@ -220,12 +247,6 @@ public class AIEnemyController : RagdollController
             }
         }
 
-        //Actualizar constantemente el destino
-        if (navAgent != null && navAgent.isOnNavMesh)
-        {
-            navAgent.SetDestination(targetMaskObject.transform.position);
-        }
-
         float distanceToMask = Vector3.Distance(transform.position, targetMaskObject.transform.position);
 
         if (distanceToMask <= maskController.GetPickupRange())
@@ -245,6 +266,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Persigue al jugador limitando las llamadas al NavMesh y ataca con Hash IDs
     private void HandleFollowingPlayerState()
     {
         if (playerTransform == null)
@@ -253,7 +275,15 @@ public class AIEnemyController : RagdollController
             return;
         }
 
-        navAgent.SetDestination(playerTransform.position);
+        if (Time.time - lastPathUpdateTime > pathUpdateInterval)
+        {
+            lastPathUpdateTime = Time.time;
+
+            if (navAgent != null && navAgent.isOnNavMesh && navAgent.isActiveAndEnabled)
+            {
+                navAgent.SetDestination(playerTransform.position);
+            }
+        }
 
         float distanceToPlayer = Vector3.Distance(transform.position, playerTransform.position);
 
@@ -262,12 +292,16 @@ public class AIEnemyController : RagdollController
             maskController.TryUseAbility();
             if (Time.time - atackCooldown > lastAtackTime)
             {
-                animator.SetTrigger(armsAnimations[Random.Range(0, 2)]);
+                //Usamos los números en lugar de strings. Mucho más rápido.
+                int triggerToUse = (Random.value > 0.5f) ? leftPunchHash : rightPunchHash;
+                animator.SetTrigger(triggerToUse);
+
                 lastAtackTime = Time.time;
             }
         }
     }
 
+    //Calcula una posición segura lejos del jugador y huye
     private void HandleFleeingState()
     {
         if (playerTransform == null)
@@ -293,6 +327,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Espera un tiempo antes de volver a intentar buscar máscaras
     private void HandleWaitingForMaskState()
     {
         if (Time.time - lastMaskSearchTime > maskSearchInterval * 2f)
@@ -301,140 +336,92 @@ public class AIEnemyController : RagdollController
         }
     }
 
-    private GameObject FindBestAvailableMask()
+    //Búsqueda optimizada (Zero Garbage) de la mejor máscara o counter
+    private GameObject FindNearestMask(MaskType? specificType = null)
     {
-        Collider[] maskColliders = Physics.OverlapSphere(transform.position, maskSearchRadius, maskLayer);
+        //Usamos el array pre-asignado
+        int numFound = Physics.OverlapSphereNonAlloc(transform.position, maskSearchRadius, results, maskLayer);
 
-        if (maskColliders.Length == 0)
-            return null;
+        if (numFound == 0) return null;
 
         GameObject bestMask = null;
-        float closestDistance = Mathf.Infinity;
-        MaskType targetMaskType = MaskType.None;
+        float closestDistSqr = Mathf.Infinity;
 
-        //Determinar qué máscara queremos basado en la del jugador
-        if (playerMaskController != null && playerMaskController.HasMask())
+        // Variable clave para la lógica de prioridad
+        bool bestIsPriority = false;
+
+        MaskType counterType = MaskType.None;
+
+        //Solo calculamos el counter si NO estamos buscando un tipo específico
+        //y el jugador tiene máscara.
+        if (!specificType.HasValue && playerMaskController != null && playerMaskController.HasMask())
         {
             MaskType playerMask = playerMaskController.GetCurrentMaskType().GetValueOrDefault();
-            targetMaskType = MaskAdvantageSystem.GetCounterMask(playerMask);
+            counterType = MaskAdvantageSystem.GetCounterMask(playerMask);
         }
 
-        //Si ya tenemos la máscara ideal, no buscar
-        if (maskController.HasMask() && targetMaskType != MaskType.None)
+        for (int i = 0; i < numFound; i++)
         {
-            if (maskController.GetCurrentMaskType() == targetMaskType)
-            {
-                //Ya tenemos la máscara perfecta contra el jugador
-                return null;
-            }
-        }
-
-        foreach (Collider col in maskColliders)
-        {
-            Mask mask = col.GetComponent<Mask>();
-            if (mask == null)
+            //Obtener componente de forma segura
+            if (!results[i].TryGetComponent(out Mask mask))
                 continue;
 
-            GameObject maskObj = col.gameObject;
+            GameObject maskObj = mask.gameObject; //Cacheamos el GameObject
 
-            // No recoger nuestra propia máscara
-            if (maskObj == maskController.GetCurrentMaskObject())
+            if (maskObj.transform.parent != poolTransform)
                 continue;
-
-            //Verificar que la máscara esté realmente disponible
-            if (maskObj.transform.parent != null)
-            {
-                //Verificar si está en el pool (disponible) o equipada por alguien
-                bool isInPool = maskObj.transform.parent.GetComponent<MaskPoolManager>() != null;
-
-                if (!isInPool)
-                {
-                    //La máscara está equipada por alguien (jugador u otra IA), ignorar
-                    continue;
-                }
-            }
-
-            //No buscar máscaras del mismo tipo que ya tenemos
-            if (maskController.HasMask() && mask.GetMaskType() == maskController.GetCurrentMaskType())
-            {
-                //Ya tenemos este tipo de máscara, no tiene sentido cambiar
-                continue;
-            }
-
-            float distance = Vector3.Distance(transform.position, maskObj.transform.position);
-
-            //Priorizar la máscara que le gana al jugador
-            if (targetMaskType != MaskType.None && mask.GetMaskType() == targetMaskType)
-            {
-                if (distance < closestDistance)
-                {
-                    closestDistance = distance;
-                    bestMask = maskObj;
-                }
-            }
-            //Si no hay máscara ideal, tomar cualquiera DIFERENTE a la que tenemos
-            else if (bestMask == null && distance < closestDistance)
-            {
-                closestDistance = distance;
-                bestMask = maskObj;
-            }
-        }
-
-        return bestMask;
-    }
-
-    //busca una máscara que le dé ventaja contra el jugador
-    private GameObject FindBetterMaskAgainstPlayer()
-    {
-        if (playerMaskController == null || !playerMaskController.HasMask())
-            return null;
-
-        MaskType playerMask = playerMaskController.GetCurrentMaskType().GetValueOrDefault();
-        MaskType counterMask = MaskAdvantageSystem.GetCounterMask(playerMask);
-
-        // Si ya tenemos la máscara ideal, no buscar
-        if (maskController.HasMask() && maskController.GetCurrentMaskType() == counterMask)
-            return null;
-
-        Collider[] maskColliders = Physics.OverlapSphere(transform.position, maskSearchRadius, maskLayer);
-
-        if (maskColliders.Length == 0)
-            return null;
-
-        GameObject bestMask = null;
-        float closestDistance = Mathf.Infinity;
-
-        foreach (Collider col in maskColliders)
-        {
-            Mask mask = col.GetComponent<Mask>();
-            if (mask == null)
-                continue;
-
-            GameObject maskObj = col.gameObject;
 
             //No recoger nuestra propia máscara
             if (maskObj == maskController.GetCurrentMaskObject())
                 continue;
 
-            //Verificar que la máscara esté realmente disponible
-            if (maskObj.transform.parent != null)
+            //No recoger una máscara del mismo tipo si ya la tengo
+            if (maskController.HasMask() && mask.GetMaskType() == maskController.GetCurrentMaskType())
+                continue;
+
+
+            //LÓGICA DE SELECCIÓN
+            float currentDistSqr = (results[i].transform.position - transform.position).sqrMagnitude;
+            MaskType currentMaskType = mask.GetMaskType();
+
+
+            //Buscamos un tipo específico
+            if (specificType.HasValue)
             {
-                bool isInPool = maskObj.transform.parent.GetComponent<MaskPoolManager>() != null;
-                if (!isInPool)
+                if (currentMaskType == specificType.Value)
                 {
-                    //La máscara está equipada por alguien
-                    continue;
+                    if (currentDistSqr < closestDistSqr)
+                    {
+                        closestDistSqr = currentDistSqr;
+                        bestMask = maskObj;
+                    }
                 }
             }
 
-            //Solo buscar la máscara que le gana al jugador
-            if (mask.GetMaskType() == counterMask)
+            //Buscamos la mejor disponible
+            else
             {
-                float distance = Vector3.Distance(transform.position, maskObj.transform.position);
-                if (distance < closestDistance)
+
+                bool isPriority = (counterType != MaskType.None && currentMaskType == counterType);
+
+                // ¿Cuándo cambiamos nuestra 'bestMask' por esta nueva 'candidate'?
+                if (isPriority && !bestIsPriority)
                 {
-                    closestDistance = distance;
+                    //Encontré oro y antes tenía cobre.
+                    closestDistSqr = currentDistSqr;
                     bestMask = maskObj;
+                    bestIsPriority = true;
+                }
+                else if (isPriority == bestIsPriority)
+                {
+                    //Ambas son del mismo "rango"
+                    //Gana la que esté más cerca.
+                    if (currentDistSqr < closestDistSqr)
+                    {
+                        closestDistSqr = currentDistSqr;
+                        bestMask = maskObj;
+                        //bestIsPriority se mantiene igual
+                    }
                 }
             }
         }
@@ -442,6 +429,7 @@ public class AIEnemyController : RagdollController
         return bestMask;
     }
 
+    //Convierte la ruta del NavMesh en inputs de movimiento para el Ragdoll
     private void UpdateMovementVector()
     {
         if (navAgent == null || !navAgent.enabled || !navAgent.isOnNavMesh)
@@ -479,6 +467,7 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Gestiona la transición limpia entre estados
     private void ChangeState(AIState newState)
     {
         if (currentState == newState)
@@ -489,15 +478,27 @@ public class AIEnemyController : RagdollController
         OnEnterState(newState);
     }
 
+    //Configuración inicial al entrar a un estado (SetDestination único)
     private void OnEnterState(AIState state)
     {
         switch (state)
         {
+            case AIState.ApproachingMask:
+                if (navAgent != null && navAgent.isOnNavMesh)
+                {
+                    navAgent.isStopped = false;
+
+                    //Asignamos el destino UNA VEZ al entrar al estado.
+                    if (targetMaskObject != null)
+                    {
+                        navAgent.SetDestination(targetMaskObject.transform.position);
+                    }
+                }
+                break;
+
             case AIState.Fleeing:
             case AIState.FollowingPlayer:
-            case AIState.ApproachingMask:
-                if (navAgent != null)
-                    navAgent.isStopped = false;
+                if (navAgent != null) navAgent.isStopped = false;
                 break;
 
             case AIState.Idle:
@@ -508,11 +509,13 @@ public class AIEnemyController : RagdollController
         }
     }
 
+    //Limpieza al salir de un estado
     private void OnExitState(AIState state)
     {
         //Cleanup si es necesario
     }
 
+    //Dibuja ayudas visuales en el editor para depuración
     private void OnDrawGizmosSelected()
     {
         if (!showDebugGizmos)
