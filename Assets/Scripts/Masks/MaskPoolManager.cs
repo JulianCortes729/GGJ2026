@@ -18,7 +18,7 @@ public class MaskPoolManager : MonoBehaviour
 
     //Pool de máscaras organizadas por tipo
     private Dictionary<MaskType, Queue<GameObject>> inactiveMasks = new Dictionary<MaskType, Queue<GameObject>>();
-    private Dictionary<MaskType, List<GameObject>> activeMasks = new Dictionary<MaskType, List<GameObject>>();
+    private Dictionary<MaskType, HashSet<GameObject>> activeMasks = new Dictionary<MaskType, HashSet<GameObject>>();
 
     //Trackear spawn points ocupados
     private HashSet<Transform> occupiedSpawnPoints = new HashSet<Transform>();
@@ -42,15 +42,13 @@ public class MaskPoolManager : MonoBehaviour
         foreach (MaskType type in System.Enum.GetValues(typeof(MaskType)))
         {
             inactiveMasks[type] = new Queue<GameObject>();
-            activeMasks[type] = new List<GameObject>();
+            activeMasks[type] = new HashSet<GameObject>();
         }
 
         //Crear máscaras en el pool (desactivadas)
         CreateMasksInPool(MaskType.GreenMask, greenMaskPrefab, masksPerType);
         CreateMasksInPool(MaskType.RedMask, redMaskPrefab, masksPerType);
         CreateMasksInPool(MaskType.BlueMask, blueMaskPrefab, masksPerType);
-
-        Debug.Log($"[Pool] Inicializado con {masksPerType} máscaras de cada tipo");
     }
 
   
@@ -118,8 +116,6 @@ public class MaskPoolManager : MonoBehaviour
                 tracker = mask.AddComponent<MaskSpawnTracker>();
             tracker.occupiedSpawnPoint = spawnPoint;
         }
-
-        Debug.Log($"[Pool] Spawneada máscara {type} en {spawnPos}");
     }
 
 
@@ -129,7 +125,6 @@ public class MaskPoolManager : MonoBehaviour
         Mask maskComponent = mask.GetComponent<Mask>();
         if (maskComponent == null)
         {
-            Debug.LogError("[Pool] GameObject no tiene component Mask!");
             return;
         }
 
@@ -151,8 +146,6 @@ public class MaskPoolManager : MonoBehaviour
 
         //Devolver al pool
         inactiveMasks[type].Enqueue(mask);
-
-        Debug.Log($"[Pool] Máscara {type} reciclada");
     }
 
 
@@ -162,7 +155,41 @@ public class MaskPoolManager : MonoBehaviour
         if (spawnPoints == null || spawnPoints.Length == 0)
             return null;
 
-        // Lista de spawn points libres
+        int maxAttempts = 10;
+
+        // Optimizamos la distancia al cuadrado 
+        float minDistanceSqr = minDistanceFromPlayer * minDistanceFromPlayer;
+
+        for (int i = 0; i < maxAttempts; i++)
+        {
+            //Elegir un punto al azar directamente del array original
+            Transform candidate = spawnPoints[Random.Range(0, spawnPoints.Length)];
+
+            //¿Está ocupado?
+            if (occupiedSpawnPoints.Contains(candidate))
+                continue; // Está ocupado, probar otro
+
+            //¿Está lejos del jugador?
+            if (playerTransform != null)
+            {
+                //Usamos sqrMagnitude que es mucho más rápido que Distance
+                float sqrDist = (candidate.position - playerTransform.position).sqrMagnitude;
+                if (sqrDist < minDistanceSqr)
+                    continue; //Está muy cerca, probar otro
+            }
+
+            //Encontramos uno válido
+            return candidate;
+        }
+
+       
+        Debug.LogWarning("[Pool] Fast path falló, usando fallback lento.");
+        return GetFreeSpawnPointSlow();
+    }
+
+    //Este es un método para usarlo solo en emergencias
+    Transform GetFreeSpawnPointSlow()
+    {
         List<Transform> freeSpawnPoints = new List<Transform>();
 
         foreach (Transform spawnPoint in spawnPoints)
@@ -171,33 +198,21 @@ public class MaskPoolManager : MonoBehaviour
                 freeSpawnPoints.Add(spawnPoint);
         }
 
-        // Si no hay libres, devolver null (usaremos fallback)
-        if (freeSpawnPoints.Count == 0)
-        {
-            Debug.LogWarning("[Pool] No hay spawn points libres!");
-            return null;
-        }
+        if (freeSpawnPoints.Count == 0) return null;
 
-        //Si hay jugador, filtrar por distancia
+        // Lógica original de filtrado por distancia...
         if (playerTransform != null)
         {
             List<Transform> farEnoughPoints = new List<Transform>();
-
             foreach (Transform point in freeSpawnPoints)
             {
-                float distance = Vector3.Distance(point.position, playerTransform.position);
-                if (distance >= minDistanceFromPlayer)
+                if (Vector3.Distance(point.position, playerTransform.position) >= minDistanceFromPlayer)
                     farEnoughPoints.Add(point);
             }
-
-            //Si hay puntos suficientemente lejos, usar uno de esos
             if (farEnoughPoints.Count > 0)
-            {
                 return farEnoughPoints[Random.Range(0, farEnoughPoints.Count)];
-            }
         }
 
-        //Fallback: cualquier punto libre
         return freeSpawnPoints[Random.Range(0, freeSpawnPoints.Count)];
     }
 
