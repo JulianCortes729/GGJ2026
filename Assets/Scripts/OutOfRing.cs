@@ -14,6 +14,7 @@ public class OutOfRing : MonoBehaviour
         if (other.CompareTag("Enemy"))
         {
             VictoryEvents.OnEnemyDefeated();
+            other.gameObject.SetActive(false);
         }
     }
 }

@@ -16,7 +16,7 @@ public class DefeatManager : MonoBehaviour
     {
         "TE SACARON DEL RING, VIEJO...",
         "TE NOQUEARON, MAESTRO",
-        "NO FUE TU D�A, CAPO",
+        "NO FUE TU DÍA, CAPO",
         "TE HICIERON PELOTA, BOLUDO",
         "TE CAGARON A TROMPADAS, CHE",
         "NO AGUANTASTE EL ROUND, WACHO",

@@ -16,22 +16,22 @@ public class VictoryManager : MonoBehaviour
 
     private string[] mensajesVictoria = new string[]
     {
-        "�CAMPE�N INDISCUTIDO, MAESTRO!",
-        "�NADIE TE AGUANT� UN ROUND, CRACK!",
-        "�LOS MANDASTE A TODOS A LA LONA!",
-        "�LOS HICISTE PELOTA A TODOS!",
-        "�TE QUEDASTE SOLO EN EL RING, �DOLO!",
-        "�INVENCIBLE, MAESTRO!",
-        "�NO DEJASTE NI UNO EN PIE, CRACK!",
-        "�LEYENDA DEL RING, WACHO!",
-        "�LES DISTE UNA PALIZA HIST�RICA!",
-        "�DOMINIO TOTAL, PAP�!",
-        "�LOS NOQUEASTE A TODOS, MAESTRO!"
+        "!CAMPEON INDISCUTIDO, MAESTRO!",
+        "!NADIE TE AGUANTO UN ROUND, CRACK",
+        "!LOS MANDASTE A TODOA A LA LONA!",
+        "!LOS HICISTE PELOTA A TODOS!",
+        "TE QUEDASTE SOLO EN EL RING, ÍDOLO",
+        "!INVENSIBLE, MAESTRO!",
+        "!NO DEJASTE NI UNO EN PIE, CRACK!",
+        "!LEYENDA DEL RING, WACHO!",
+        "LES DISTE UNA PALIZA HISTÓRICA!",
+        "!DOMINIO TOTAL,PAPÁ!",
+        "!LOS NOQUEASTE A TODOS, MAESTRO!"
     };
 
     private void Start()
     {
-        enemiesToDefeat = GameObject.FindGameObjectsWithTag("Enemy").Length;
+        enemiesToDefeat = 5;
 
         if (victoryPanel != null) victoryPanel.SetActive(false);
         if (victoryEffects != null) victoryEffects.SetActive(false);
